@@ -10,6 +10,8 @@ import android.widget.EditText;
  */
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String LOG_TAG = RegisterActivity.class.getSimpleName();
+
     private EditText mEditTextName;
     private EditText mEditTextEmail;
     private EditText mEditTextPassword;
@@ -29,6 +31,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        //
+
     }
 }
