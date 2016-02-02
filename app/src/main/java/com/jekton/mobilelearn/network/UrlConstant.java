@@ -9,4 +9,6 @@ public class UrlConstant {
 
     public static final String REGISTER = HOST + "/api/register";
     public static final String LOGIN = HOST + "/api/login";
+
+    public static final String GET_TAKEN_COURSES = HOST + "/api/takencourses";
 }
