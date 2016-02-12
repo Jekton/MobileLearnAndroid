@@ -16,7 +16,7 @@ public class HttpUtils {
                 .build();
 
         return new Request.Builder()
-                .url(UrlConstant.LOGIN)
+                .url(UrlConstants.LOGIN)
                 .post(formBody)
                 .build();
     }

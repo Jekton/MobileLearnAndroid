@@ -3,7 +3,7 @@ package com.jekton.mobilelearn.network;
 /**
  * @author Jekton
  */
-public class UrlConstant {
+public class UrlConstants {
 
     public static final String HOST = "http://192.168.1.100:3000";
 
