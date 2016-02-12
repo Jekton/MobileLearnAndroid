@@ -26,7 +26,7 @@ public abstract class GenericActivity<ViewOps, DocumentOps extends BasicDocument
      * @param documentOpsClass class object of the DocumentOps
      * @param view "View" object of the Document-View framework
      */
-    protected void onCreate(Class<DocumentOps> documentOpsClass, ViewOps view) {
+    protected void onCreateDocument(ViewOps view, Class<? extends DocumentOps> documentOpsClass) {
         FragmentManager manager = getFragmentManager();
         mRetainedFragment = (RetainedFragment) manager.findFragmentByTag(RETAINED_FRAGMENT_TAG);
         if (mRetainedFragment == null) {
@@ -47,7 +47,7 @@ public abstract class GenericActivity<ViewOps, DocumentOps extends BasicDocument
         transaction.commit();
     }
 
-    private void initDocument(Class<DocumentOps> documentOpsClass) {
+    private void initDocument(Class<? extends DocumentOps> documentOpsClass) {
         try {
             mDocument = documentOpsClass.newInstance();
         } catch (InstantiationException e) {
