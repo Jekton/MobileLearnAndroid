@@ -7,9 +7,9 @@ import okhttp3.Response;
  */
 public interface OnResponseCallback {
 
-    void onNetworkFail();
-
     void onResponseSuccess(Response response);
+
+    void onNetworkFail();
 
     void onResponseFail(Response response);
 }

@@ -1,7 +1,6 @@
 package com.jekton.mobilelearn.network;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.jekton.mobilelearn.common.dv.AbstractDocument;
 import com.jekton.mobilelearn.common.util.Logger;
@@ -50,7 +49,8 @@ public abstract class AbstractHttpRunnable implements Runnable {
     }
 
     public void cancel() {
-        mCall.cancel();
+        if (!mCall.isCanceled())
+            mCall.cancel();
     }
 
     protected abstract @NonNull Request makeRequest();

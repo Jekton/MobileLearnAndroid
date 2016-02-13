@@ -1,12 +1,11 @@
 package com.jekton.mobilelearn.activity.register;
 
-import com.jekton.mobilelearn.common.dv.ContextView;
-
 /**
  * @author Jekton
  */
-public interface RegisterViewOps extends ContextView {
+public interface RegisterViewOps {
 
-    void onRegisterSuccess();
-    void onRegisterFail(String msg);
+    void onRegisterSuccess(String email, String password);
+    void onRegisterFail();
+    void onNetworkFail();
 }

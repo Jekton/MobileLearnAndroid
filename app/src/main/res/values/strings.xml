@@ -1,8 +1,16 @@
 <resources>
     <string name="app_name">MobileLearn</string>
 
+    <!-- Common error message -->
+    <string name="err_network_error">Network error</string>
+
     <string name="email">email</string>
     <string name="name">name</string>
     <string name="password">password</string>
     <string name="register">register</string>
+
+
+
+    <string name="msg_register_success">Register success</string>
+    <string name="msg_register_fail">Register fail</string>
 </resources>

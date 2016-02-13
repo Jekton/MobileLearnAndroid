@@ -1,20 +1,15 @@
 package com.jekton.mobilelearn.activity.register;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.EditText;
 
 import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.dv.GenericActivity;
-import com.jekton.mobilelearn.network.HttpClient;
-import com.jekton.mobilelearn.network.UrlConstants;
-
-import java.io.IOException;
-
-import okhttp3.Request;
-import okhttp3.Response;
+import com.jekton.mobilelearn.common.util.Toaster;
+import com.jekton.mobilelearn.network.CredentialStorage;
 
 /**
  * @author Jekton
@@ -27,6 +22,8 @@ public class RegisterActivity extends GenericActivity<RegisterViewOps, RegisterD
     private EditText mEditTextName;
     private EditText mEditTextEmail;
     private EditText mEditTextPassword;
+
+    private ProgressDialog mProgressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,36 +42,45 @@ public class RegisterActivity extends GenericActivity<RegisterViewOps, RegisterD
 
     @Override
     public void onClick(View v) {
-
-    }
-
-    @Override
-    public void onRegisterSuccess() {
-
-    }
-
-    @Override
-    public void onRegisterFail(String msg) {
-
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
-    }
-
-    private void test() {
-        try {
-            Request request = new Request.Builder()
-                    .url(UrlConstants.GET_TAKEN_COURSES)
-                    .build();
-
-            Response response = HttpClient.getInstance().newCall(request).execute();
-            if (response.isSuccessful()) {
-                Log.e(LOG_TAG, response.body().string());
-            }
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "", e);
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
         }
+        mProgressDialog.show();
+        getDocument().onRegister(mEditTextName.getText().toString(),
+                                 mEditTextEmail.getText().toString(),
+                                 mEditTextPassword.getText().toString());
+    }
+
+    @Override
+    public void onRegisterSuccess(final String email, final String password) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toaster.showShort(RegisterActivity.this, R.string.msg_register_success);
+                CredentialStorage.storeCredential(email, password);
+                // TODO: 2/13/2016  go to add course page
+            }
+        });
+    }
+
+    private void showToastAndDismissDialog(@StringRes final int msgId) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toaster.showShort(RegisterActivity.this, msgId);
+                mProgressDialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void onRegisterFail() {
+        showToastAndDismissDialog(R.string.msg_register_fail);
+    }
+
+    @Override
+    public void onNetworkFail() {
+        showToastAndDismissDialog(R.string.err_network_error);
     }
 }
