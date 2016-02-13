@@ -15,9 +15,8 @@ public abstract class GenericActivity<ViewOps, DocumentOps extends BasicDocument
     private static final String LOG_TAG = GenericActivity.class.getSimpleName();
 
     private static final String RETAINED_FRAGMENT_TAG = "RETAINED_FRAGMENT_TAG";
-    private static final String DOCUMENT_KEY = "DOCUMENT_KEY";
 
-    private RetainedFragment mRetainedFragment;
+    private RetainedFragment<DocumentOps> mRetainedFragment;
     private DocumentOps mDocument;
 
 
@@ -28,18 +27,24 @@ public abstract class GenericActivity<ViewOps, DocumentOps extends BasicDocument
      */
     protected void onCreateDocument(ViewOps view, Class<? extends DocumentOps> documentOpsClass) {
         FragmentManager manager = getFragmentManager();
-        mRetainedFragment = (RetainedFragment) manager.findFragmentByTag(RETAINED_FRAGMENT_TAG);
+
+        // The found fragment is exactly with type RetainedFragment<DocumentOps>
+        @SuppressWarnings("unchecked")
+        RetainedFragment<DocumentOps> fragment =
+                (RetainedFragment<DocumentOps>) manager.findFragmentByTag(RETAINED_FRAGMENT_TAG);
+        mRetainedFragment = fragment;
+
         if (mRetainedFragment == null) {
             initRetainedFragment(manager);
             initDocument(documentOpsClass);
         } else {
-            mDocument = mRetainedFragment.getRetainedObject(DOCUMENT_KEY);
+            mDocument = mRetainedFragment.getDocument();
         }
         mDocument.setView(view);
     }
 
     private void initRetainedFragment(FragmentManager manager) {
-        mRetainedFragment = new RetainedFragment();
+        mRetainedFragment = new RetainedFragment<>();
         mRetainedFragment.setRetainInstance(true);
 
         FragmentTransaction transaction = manager.beginTransaction();
@@ -55,7 +60,7 @@ public abstract class GenericActivity<ViewOps, DocumentOps extends BasicDocument
         } catch (IllegalAccessException e) {
             Logger.e(LOG_TAG, e);
         }
-        mRetainedFragment.putRetainedObject(DOCUMENT_KEY, mDocument);
+        mRetainedFragment.setDocument(mDocument);
     }
 
 
@@ -72,17 +77,5 @@ public abstract class GenericActivity<ViewOps, DocumentOps extends BasicDocument
         mDocument = null;
     }
 
-
-    protected <T> T getRetainedObject(String key) {
-        return mRetainedFragment.getRetainedObject(key);
-    }
-
-    protected void putRetainedObject(Object obj) {
-        mRetainedFragment.putRetainedObject(obj);
-    }
-
-    protected void putRetainedObject(String key, Object obj) {
-        mRetainedFragment.putRetainedObject(key, obj);
-    }
 
 }
