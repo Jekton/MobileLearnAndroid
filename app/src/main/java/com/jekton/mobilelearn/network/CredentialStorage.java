@@ -8,7 +8,7 @@ import com.jekton.mobilelearn.MyApplication;
 /**
  * @author Jekton
  */
-class CredentialStorage {
+public class CredentialStorage {
 
     private static final String SP_CREDENTIAL_NAME = "SP_CREDENTIAL_NAME";
     private static final String CREDENTIAL_KEY_EMAIL = "CREDENTIAL_KEY_EMAIL";
