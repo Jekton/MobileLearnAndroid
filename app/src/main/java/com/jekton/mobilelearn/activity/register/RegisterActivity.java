@@ -1,20 +1,18 @@
 package com.jekton.mobilelearn.activity.register;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.EditText;
 
 import com.jekton.mobilelearn.R;
-import com.jekton.mobilelearn.common.dv.GenericActivity;
+import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
 import com.jekton.mobilelearn.common.util.Toaster;
 import com.jekton.mobilelearn.network.CredentialStorage;
 
 /**
  * @author Jekton
  */
-public class RegisterActivity extends GenericActivity<RegisterViewOps, RegisterDocumentOps>
+public class RegisterActivity extends DialogEnabledActivity<RegisterViewOps, RegisterDocumentOps>
         implements View.OnClickListener, RegisterViewOps {
 
     private static final String LOG_TAG = RegisterActivity.class.getSimpleName();
@@ -23,12 +21,11 @@ public class RegisterActivity extends GenericActivity<RegisterViewOps, RegisterD
     private EditText mEditTextEmail;
     private EditText mEditTextPassword;
 
-    private ProgressDialog mProgressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.onCreateDocument(this, RegisterOperator.class);
+        super.onCreateDocument(this, RegisterDocument.class);
         setContentView(R.layout.activity_register);
 
         mEditTextName = (EditText) findViewById(R.id.name);
@@ -42,10 +39,7 @@ public class RegisterActivity extends GenericActivity<RegisterViewOps, RegisterD
 
     @Override
     public void onClick(View v) {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-        }
-        mProgressDialog.show();
+        showDialog();
         getDocument().onRegister(mEditTextName.getText().toString(),
                                  mEditTextEmail.getText().toString(),
                                  mEditTextPassword.getText().toString());
@@ -64,18 +58,9 @@ public class RegisterActivity extends GenericActivity<RegisterViewOps, RegisterD
         });
     }
 
-    private void showToastAndDismissDialog(@StringRes final int msgId) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toaster.showShort(RegisterActivity.this, msgId);
-                mProgressDialog.dismiss();
-            }
-        });
-    }
 
     @Override
-    public void onRegisterFail() {
+    public void onPostActionFail() {
         showToastAndDismissDialog(R.string.msg_register_fail);
     }
 

@@ -13,10 +13,6 @@ import okhttp3.Response;
 
 /**
  * @author Jekton
- *
- * This class is designed to work with the default Document implementation {@link AbstractDocument}
- * of the Document-View framework and hence the parameter type DocumentOps is expected to extend
- * {@link AbstractDocument}.
  */
 public abstract class AbstractHttpRunnable implements Runnable {
 

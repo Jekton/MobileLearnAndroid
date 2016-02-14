@@ -1,11 +1,12 @@
 package com.jekton.mobilelearn.activity.register;
 
+import com.jekton.mobilelearn.common.dv.network.OnDocumentFail;
+
 /**
  * @author Jekton
  */
-public interface RegisterViewOps {
+interface RegisterViewOps extends OnDocumentFail {
 
     void onRegisterSuccess(String email, String password);
-    void onRegisterFail();
-    void onNetworkFail();
+
 }
