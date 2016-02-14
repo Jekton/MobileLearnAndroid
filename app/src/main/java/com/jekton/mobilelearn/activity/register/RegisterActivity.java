@@ -5,14 +5,14 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.jekton.mobilelearn.R;
-import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
+import com.jekton.mobilelearn.common.dv.network.SimpleHttpActivity;
 import com.jekton.mobilelearn.common.util.Toaster;
 import com.jekton.mobilelearn.network.CredentialStorage;
 
 /**
  * @author Jekton
  */
-public class RegisterActivity extends DialogEnabledActivity<RegisterViewOps, RegisterDocumentOps>
+public class RegisterActivity extends SimpleHttpActivity<RegisterViewOps, RegisterDocument>
         implements View.OnClickListener, RegisterViewOps {
 
     private static final String LOG_TAG = RegisterActivity.class.getSimpleName();

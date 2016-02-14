@@ -6,14 +6,14 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.jekton.mobilelearn.R;
-import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
+import com.jekton.mobilelearn.common.dv.network.SimpleHttpActivity;
 import com.jekton.mobilelearn.common.util.Toaster;
 import com.jekton.mobilelearn.network.CredentialStorage;
 
 /**
  * @author Jekton
  */
-public class LoginActivity extends DialogEnabledActivity<LoginViewOps, LoginDocumentOps>
+public class LoginActivity extends SimpleHttpActivity<LoginViewOps, LoginDocument>
         implements LoginViewOps, View.OnClickListener {
 
     private EditText mEmailEditText;

@@ -11,7 +11,7 @@ import okhttp3.Response;
 /**
  * @author Jekton
  */
-public abstract class SimpleDocument<ViewOps extends OnDocumentFail>
+public abstract class SimpleHttpDocument<ViewOps extends OnDocumentFail>
         extends AbstractDocument<ViewOps>
         implements OnResponseCallback {
 
@@ -23,10 +23,15 @@ public abstract class SimpleDocument<ViewOps extends OnDocumentFail>
         AsyncTask.THREAD_POOL_EXECUTOR.execute(runnable);
     }
 
+    public void cancelNetworkOp() {
+        mHttpRunnable.cancel();
+        mHttpRunnable = null;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mHttpRunnable.cancel();
+        cancelNetworkOp();
     }
 
 

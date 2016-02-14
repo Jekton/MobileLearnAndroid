@@ -2,7 +2,6 @@ package com.jekton.mobilelearn.network;
 
 import android.support.annotation.NonNull;
 
-import com.jekton.mobilelearn.common.dv.AbstractDocument;
 import com.jekton.mobilelearn.common.util.Logger;
 
 import java.io.IOException;
@@ -39,7 +38,9 @@ public abstract class AbstractHttpRunnable implements Runnable {
             }
         } catch (IOException e) {
             Logger.d(LOG_TAG, e);
-            mCallback.onNetworkFail();
+            // won't to call it back if it's canceled
+            if (mCall.isCanceled())
+                mCallback.onNetworkFail();
         }
 
     }

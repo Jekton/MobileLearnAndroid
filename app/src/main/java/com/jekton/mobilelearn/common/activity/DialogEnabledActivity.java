@@ -44,4 +44,8 @@ public class DialogEnabledActivity<ViewOps, DocumentOps extends BasicDocumentOps
             }
         });
     }
+
+    public boolean isDialogShowing() {
+        return mProgressDialog != null && mProgressDialog.isShowing();
+    }
 }

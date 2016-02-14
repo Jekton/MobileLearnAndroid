@@ -2,7 +2,7 @@ package com.jekton.mobilelearn.activity.register;
 
 import android.support.annotation.NonNull;
 
-import com.jekton.mobilelearn.common.dv.network.SimpleDocument;
+import com.jekton.mobilelearn.common.dv.network.SimpleHttpDocument;
 import com.jekton.mobilelearn.network.AbstractHttpRunnable;
 import com.jekton.mobilelearn.network.OnResponseCallback;
 import com.jekton.mobilelearn.network.UrlConstants;
@@ -15,7 +15,7 @@ import okhttp3.Response;
 /**
  * @author Jekton
  */
-class RegisterDocument extends SimpleDocument<RegisterViewOps>
+class RegisterDocument extends SimpleHttpDocument<RegisterViewOps>
         implements RegisterDocumentOps {
 
     private static final String LOG_TAG = RegisterDocument.class.getSimpleName();
