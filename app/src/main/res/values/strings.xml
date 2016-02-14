@@ -8,9 +8,14 @@
     <string name="name">name</string>
     <string name="password">password</string>
     <string name="register">register</string>
+    <string name="login">login</string>
 
 
 
     <string name="msg_register_success">Register success</string>
     <string name="msg_register_fail">Register fail</string>
+
+    <string name="msg_login_success">Login success</string>
+    <string name="msg_login_fail">Login fail</string>
+
 </resources>

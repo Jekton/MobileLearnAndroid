@@ -1,4 +1,4 @@
-package com.jekton.mobilelearn.activity.register;
+package com.jekton.mobilelearn.activity.login;
 
 import android.support.annotation.NonNull;
 
@@ -15,60 +15,53 @@ import okhttp3.Response;
 /**
  * @author Jekton
  */
-class RegisterDocument extends SimpleDocument<RegisterViewOps>
-        implements RegisterDocumentOps {
-
-    private static final String LOG_TAG = RegisterDocument.class.getSimpleName();
+class LoginDocument extends SimpleDocument<LoginViewOps>
+        implements LoginDocumentOps {
 
     private String mEmail;
     private String mPassword;
 
-
     @Override
-    public void onRegister(String name, String email, String password) {
+    public void onLogin(String email, String password) {
         mEmail = email;
         mPassword = password;
 
-        doPost(new RegisterPostRunnable(name, email, password, this));
+        doPost(new LoginPostRunnable(email, password, this));
     }
-
 
     @Override
     public void onResponseSuccess(Response response) {
-        RegisterViewOps view = getView();
+        LoginViewOps view = getView();
         if (view != null) {
-            // we don't retrieve them in the corresponding EditText to prevent modifying while
-            // the registration
-            view.onRegisterSuccess(mEmail, mPassword);
+            view.onLoginSuccess(mEmail, mPassword);
         }
     }
 
 
 
-    private static class RegisterPostRunnable extends AbstractHttpRunnable {
+    private static class LoginPostRunnable extends AbstractHttpRunnable {
 
-        private Request mRequest;
+        private final Request mRequest;
 
-        public RegisterPostRunnable(String name,
-                                    String email,
-                                    String password,
-                                    OnResponseCallback callback) {
+        public LoginPostRunnable(String email,
+                                 String password,
+                                 OnResponseCallback callback) {
             super(callback);
 
             // This is a "post" Runnable, and the Request is always expected to be created
             RequestBody formBody = new FormBody.Builder()
-                    .add("name", name)
                     .add("email", email)
                     .add("password", password)
                     .build();
             mRequest = new Request.Builder()
-                    .url(UrlConstants.REGISTER)
+                    .url(UrlConstants.LOGIN)
                     .post(formBody)
                     .build();
         }
 
         @Override
-        protected @NonNull Request makeRequest() {
+        protected @NonNull
+        Request makeRequest() {
             return mRequest;
         }
     }
