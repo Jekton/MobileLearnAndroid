@@ -26,7 +26,7 @@ class LoginDocument extends SimpleHttpDocument<LoginViewOps>
         mEmail = email;
         mPassword = password;
 
-        doHttpAction(new LoginPostRunnable(email, password, this));
+        doHttpRequest(new LoginPostRunnable(email, password, this));
     }
 
     @Override

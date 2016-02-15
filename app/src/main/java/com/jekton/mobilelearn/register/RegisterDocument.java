@@ -29,7 +29,7 @@ class RegisterDocument extends SimpleHttpDocument<RegisterViewOps>
         mEmail = email;
         mPassword = password;
 
-        doHttpAction(new RegisterPostRunnable(name, email, password, this));
+        doHttpRequest(new RegisterPostRunnable(name, email, password, this));
     }
 
 

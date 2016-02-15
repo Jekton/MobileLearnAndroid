@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="@dimen/activity_all_course_list_item_height"
+        android:layout_height="@dimen/activity_all_course_list_item_height"
+        android:scaleType="centerCrop"/>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="@dimen/activity_all_course_list_item_height"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Holo.Large"
+            tools:text="Course name"/>
+        <TextView
+            android:id="@+id/desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+            tools:text="Course description"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

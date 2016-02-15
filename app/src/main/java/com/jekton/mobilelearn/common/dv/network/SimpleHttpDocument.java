@@ -10,6 +10,10 @@ import okhttp3.Response;
 
 /**
  * @author Jekton
+ *
+ * Note: this class expects the client to run HTTP request one-by-one, that is, if the client wanna
+ * start a second Http request by calling {@link #doHttpRequest(AbstractHttpRunnable)}, the first
+ * one must be finished or canceled.
  */
 public abstract class SimpleHttpDocument<ViewOps extends OnDocumentFail>
         extends AbstractDocument<ViewOps>
@@ -17,7 +21,7 @@ public abstract class SimpleHttpDocument<ViewOps extends OnDocumentFail>
 
     private volatile AbstractHttpRunnable mHttpRunnable;
 
-    protected void doHttpAction(AbstractHttpRunnable runnable) {
+    protected void doHttpRequest(AbstractHttpRunnable runnable) {
         mHttpRunnable = runnable;
 
         AsyncTask.THREAD_POOL_EXECUTOR.execute(runnable);

@@ -27,7 +27,7 @@ public class AllCoursesDocument
 
     @Override
     public void onGettingAllCourses() {
-        doHttpAction(new GetAllCourseRunnable(this));
+        doHttpRequest(new GetAllCourseRunnable(this));
     }
 
     @Override
@@ -58,7 +58,6 @@ public class AllCoursesDocument
         protected Request makeRequest() {
             return new Request.Builder()
                     .url(UrlConstants.GET_ALL_COURSES)
-                    .get()
                     .build();
         }
     }
