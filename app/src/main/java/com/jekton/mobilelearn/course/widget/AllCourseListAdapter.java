@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.course.Course;
+import com.jekton.mobilelearn.network.UrlConstants;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -59,6 +61,8 @@ public class AllCourseListAdapter extends BaseAdapter {
         Course course = getItem(position);
         holder.courseNameTextView.setText(course.name);
         holder.courseDescTextView.setText(course.desc);
+        ImageLoader.getInstance().displayImage(UrlConstants.HOST + course.iconPath,
+                                               holder.iconImageView);
 
         return convertView;
     }
