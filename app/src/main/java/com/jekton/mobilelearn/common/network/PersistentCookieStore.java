@@ -1,4 +1,4 @@
-package com.jekton.mobilelearn.network;/*
+package com.jekton.mobilelearn.common.network;/*
  * Copyright (c) 2015 Fran Montiel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

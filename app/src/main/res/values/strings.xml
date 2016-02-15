@@ -18,4 +18,5 @@
     <string name="msg_login_success">Login success</string>
     <string name="msg_login_fail">Login fail</string>
 
+    <string name="msg_fail_to_get_course_list">Fail to get course list</string>
 </resources>

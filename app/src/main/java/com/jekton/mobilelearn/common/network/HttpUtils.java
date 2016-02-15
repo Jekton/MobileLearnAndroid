@@ -1,4 +1,6 @@
-package com.jekton.mobilelearn.network;
+package com.jekton.mobilelearn.common.network;
+
+import com.jekton.mobilelearn.network.UrlConstants;
 
 import okhttp3.FormBody;
 import okhttp3.Request;

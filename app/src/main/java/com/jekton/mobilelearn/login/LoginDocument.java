@@ -1,10 +1,10 @@
-package com.jekton.mobilelearn.activity.login;
+package com.jekton.mobilelearn.login;
 
 import android.support.annotation.NonNull;
 
 import com.jekton.mobilelearn.common.dv.network.SimpleHttpDocument;
-import com.jekton.mobilelearn.network.AbstractHttpRunnable;
-import com.jekton.mobilelearn.network.OnResponseCallback;
+import com.jekton.mobilelearn.common.network.AbstractHttpRunnable;
+import com.jekton.mobilelearn.common.network.OnResponseCallback;
 import com.jekton.mobilelearn.network.UrlConstants;
 
 import okhttp3.FormBody;
@@ -26,7 +26,7 @@ class LoginDocument extends SimpleHttpDocument<LoginViewOps>
         mEmail = email;
         mPassword = password;
 
-        doPost(new LoginPostRunnable(email, password, this));
+        doHttpAction(new LoginPostRunnable(email, password, this));
     }
 
     @Override

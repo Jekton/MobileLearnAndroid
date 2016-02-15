@@ -1,4 +1,4 @@
-package com.jekton.mobilelearn.network;/*
+package com.jekton.mobilelearn.common.network;/*
  * Copyright (c) 2011 James Smith <james@loopj.com>
  * Copyright (c) 2015 Fran Montiel
  *

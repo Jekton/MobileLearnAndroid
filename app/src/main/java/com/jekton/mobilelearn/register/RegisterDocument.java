@@ -1,10 +1,10 @@
-package com.jekton.mobilelearn.activity.register;
+package com.jekton.mobilelearn.register;
 
 import android.support.annotation.NonNull;
 
 import com.jekton.mobilelearn.common.dv.network.SimpleHttpDocument;
-import com.jekton.mobilelearn.network.AbstractHttpRunnable;
-import com.jekton.mobilelearn.network.OnResponseCallback;
+import com.jekton.mobilelearn.common.network.AbstractHttpRunnable;
+import com.jekton.mobilelearn.common.network.OnResponseCallback;
 import com.jekton.mobilelearn.network.UrlConstants;
 
 import okhttp3.FormBody;
@@ -29,7 +29,7 @@ class RegisterDocument extends SimpleHttpDocument<RegisterViewOps>
         mEmail = email;
         mPassword = password;
 
-        doPost(new RegisterPostRunnable(name, email, password, this));
+        doHttpAction(new RegisterPostRunnable(name, email, password, this));
     }
 
 

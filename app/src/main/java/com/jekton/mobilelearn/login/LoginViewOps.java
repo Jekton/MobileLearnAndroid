@@ -1,4 +1,4 @@
-package com.jekton.mobilelearn.activity.login;
+package com.jekton.mobilelearn.login;
 
 import com.jekton.mobilelearn.common.dv.network.OnDocumentFail;
 

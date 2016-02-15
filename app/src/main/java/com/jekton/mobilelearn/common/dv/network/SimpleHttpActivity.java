@@ -4,10 +4,13 @@ import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
 
 /**
  * @author Jekton
+ *
+ * This class is design to interact with {@link SimpleHttpDocument} and so it's expecting the
+ * parameter type Document to extend {@link SimpleHttpDocument}
  */
 public class SimpleHttpActivity<ViewOps extends OnDocumentFail,
-                                DocumentOps extends SimpleHttpDocument<ViewOps>>
-        extends DialogEnabledActivity<ViewOps, DocumentOps> {
+                                Document extends SimpleHttpDocument<ViewOps>>
+        extends DialogEnabledActivity<ViewOps, Document> {
 
 
     @Override

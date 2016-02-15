@@ -1,4 +1,4 @@
-package com.jekton.mobilelearn.activity.register;
+package com.jekton.mobilelearn.register;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,8 +6,8 @@ import android.widget.EditText;
 
 import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.dv.network.SimpleHttpActivity;
+import com.jekton.mobilelearn.common.network.CredentialStorage;
 import com.jekton.mobilelearn.common.util.Toaster;
-import com.jekton.mobilelearn.network.CredentialStorage;
 
 /**
  * @author Jekton

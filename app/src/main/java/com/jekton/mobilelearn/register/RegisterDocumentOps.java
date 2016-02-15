@@ -1,4 +1,4 @@
-package com.jekton.mobilelearn.activity.register;
+package com.jekton.mobilelearn.register;
 
 import com.jekton.mobilelearn.common.dv.BasicDocumentOps;
 

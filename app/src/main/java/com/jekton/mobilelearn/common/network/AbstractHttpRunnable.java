@@ -1,4 +1,4 @@
-package com.jekton.mobilelearn.network;
+package com.jekton.mobilelearn.common.network;
 
 import android.support.annotation.NonNull;
 

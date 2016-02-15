@@ -3,8 +3,8 @@ package com.jekton.mobilelearn.common.dv.network;
 import android.os.AsyncTask;
 
 import com.jekton.mobilelearn.common.dv.AbstractDocument;
-import com.jekton.mobilelearn.network.AbstractHttpRunnable;
-import com.jekton.mobilelearn.network.OnResponseCallback;
+import com.jekton.mobilelearn.common.network.AbstractHttpRunnable;
+import com.jekton.mobilelearn.common.network.OnResponseCallback;
 
 import okhttp3.Response;
 
@@ -17,7 +17,7 @@ public abstract class SimpleHttpDocument<ViewOps extends OnDocumentFail>
 
     private volatile AbstractHttpRunnable mHttpRunnable;
 
-    protected void doPost(AbstractHttpRunnable runnable) {
+    protected void doHttpAction(AbstractHttpRunnable runnable) {
         mHttpRunnable = runnable;
 
         AsyncTask.THREAD_POOL_EXECUTOR.execute(runnable);
