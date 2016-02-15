@@ -1,5 +1,6 @@
 package com.jekton.mobilelearn.common.dv.network;
 
+import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
 
 /**
@@ -8,9 +9,10 @@ import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
  * This class is design to interact with {@link SimpleHttpDocument} and so it's expecting the
  * parameter type Document to extend {@link SimpleHttpDocument}
  */
-public class SimpleHttpActivity<ViewOps extends OnDocumentFail,
+public abstract class SimpleHttpActivity<ViewOps extends OnDocumentFail,
                                 Document extends SimpleHttpDocument<ViewOps>>
-        extends DialogEnabledActivity<ViewOps, Document> {
+        extends DialogEnabledActivity<ViewOps, Document>
+        implements OnDocumentFail {
 
 
     @Override
@@ -21,5 +23,11 @@ public class SimpleHttpActivity<ViewOps extends OnDocumentFail,
         } else {
             super.onBackPressed();
         }
+    }
+
+
+    @Override
+    public void onNetworkFail() {
+        showToastAndDismissDialog(R.string.err_network_error);
     }
 }

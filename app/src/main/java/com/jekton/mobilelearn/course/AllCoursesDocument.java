@@ -18,7 +18,7 @@ import okhttp3.Response;
 /**
  * @author Jekton
  */
-public class AllCoursesDocument
+class AllCoursesDocument
         extends SimpleHttpDocument<AllCoursesViewOps>
         implements AllCoursesDocumentOps {
 

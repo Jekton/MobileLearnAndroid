@@ -49,10 +49,6 @@ public class LoginActivity extends SimpleHttpActivity<LoginViewOps, LoginDocumen
         showToastAndDismissDialog(R.string.msg_login_fail);
     }
 
-    @Override
-    public void onNetworkFail() {
-        showToastAndDismissDialog(R.string.err_network_error);
-    }
 
     @Override
     public void onClick(View v) {

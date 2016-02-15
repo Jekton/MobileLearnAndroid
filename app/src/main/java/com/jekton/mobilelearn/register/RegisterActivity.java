@@ -63,9 +63,4 @@ public class RegisterActivity extends SimpleHttpActivity<RegisterViewOps, Regist
     public void onPostActionFail() {
         showToastAndDismissDialog(R.string.msg_register_fail);
     }
-
-    @Override
-    public void onNetworkFail() {
-        showToastAndDismissDialog(R.string.err_network_error);
-    }
 }

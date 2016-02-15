@@ -67,9 +67,4 @@ public class AllCoursesActivity
     public void onPostActionFail() {
         showToastAndDismissDialog(R.string.msg_fail_to_get_course_list);
     }
-
-    @Override
-    public void onNetworkFail() {
-        showToastAndDismissDialog(R.string.err_network_error);
-    }
 }
