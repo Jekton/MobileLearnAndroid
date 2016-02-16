@@ -8,7 +8,8 @@
     <ImageView
         android:id="@+id/icon"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/activity_course_details_icon_height"/>
+        android:layout_height="@dimen/activity_course_details_icon_height"
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/name"
@@ -30,5 +31,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"/>
+
+    <Button
+        android:id="@+id/take_course"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:textAllCaps="false"
+        android:text="@string/btn_take_course"/>
 
 </LinearLayout>

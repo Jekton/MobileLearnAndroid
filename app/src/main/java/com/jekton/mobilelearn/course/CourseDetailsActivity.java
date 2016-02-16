@@ -2,24 +2,32 @@ package com.jekton.mobilelearn.course;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.dv.network.SimpleHttpActivity;
+import com.jekton.mobilelearn.common.util.Toaster;
+import com.jekton.mobilelearn.network.UrlConstants;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * @author Jekton
  */
 public class CourseDetailsActivity
         extends SimpleHttpActivity<CourseDetailsViewOps, CourseDetailsDocument>
-        implements CourseDetailsViewOps {
+        implements CourseDetailsViewOps, View.OnClickListener {
 
     private static final String INTENT_EXTRA_COURSE = "CourseDetailsActivity.INTENT_EXTRA_COURSE";
 
     private Course mCourse;
+    private Button mButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,29 +54,41 @@ public class CourseDetailsActivity
     private void fillCourseInfo() {
         initCourse();
 
+        ImageLoader.getInstance().displayImage(UrlConstants.HOST + mCourse.iconPath,
+                                               (ImageView) findViewById(R.id.icon));
+
         TextView textView;
+        Resources resources = getResources();
+
         textView = (TextView) findViewById(R.id.name);
-        textView.setText(mCourse.name);
+        textView.setText(resources.getString(R.string.temp_course_name, mCourse.name));
 
         textView = (TextView) findViewById(R.id.desc);
-        textView.setText(mCourse.desc);
+        textView.setText(resources.getString(R.string.temp_course_desc, mCourse.desc));
 
         textView = (TextView) findViewById(R.id.creator);
-        textView.setText(mCourse.createdBy);
+        textView.setText(resources.getString(R.string.temp_course_creator, mCourse.createdBy));
 
         textView = (TextView) findViewById(R.id.nr_lecture);
-        textView.setText(mCourse.lectureNum);
+        textView.setText(resources.getString(R.string.temp_lecture_num, mCourse.lectureNum));
 
+        mButton = (Button) findViewById(R.id.take_course);
+        mButton.setOnClickListener(this);
+        if (mCourse.taken) {
+            mButton.setText(R.string.btn_goto_course);
+        }
     }
 
 
     @Override
     public void onCourseTaken() {
-        showToastAndDismissDialog(R.string.msg_take_course_success);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // TODO disable the "take course" button
+                mButton.setText(R.string.btn_goto_course);
+                Toaster.showShort(CourseDetailsActivity.this, R.string.msg_take_course_success);
+                closeDialog();
+                mCourse.taken = true;
             }
         });
     }
@@ -87,5 +107,15 @@ public class CourseDetailsActivity
         intent.putExtra(INTENT_EXTRA_COURSE, json);
 
         return intent;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mCourse.taken) {
+            // TODO: 2/16/2016  goto the course activity
+        } else {
+            showDialog();
+            getDocument().onTakeCourse(mCourse._id);
+        }
     }
 }

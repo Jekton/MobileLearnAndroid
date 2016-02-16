@@ -18,7 +18,7 @@ public class Course {
     public Path[] lectures;
     public Path[] files;
     public boolean publish;
-
+    public boolean taken;
 
     public class Path {
         public String _id;

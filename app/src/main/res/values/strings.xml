@@ -22,4 +22,12 @@
 
     <string name="msg_take_course_fail">Fail to take course</string>
     <string name="msg_take_course_success">Course taken</string>
+
+    <string name="temp_course_name">Course Name: %1$s</string>
+    <string name="temp_course_desc">Description: %1$s</string>
+    <string name="temp_lecture_num">Lectures: %1$s</string>
+    <string name="temp_course_creator">Course Creator: %1$s</string>
+
+    <string name="btn_take_course">Take Course</string>
+    <string name="btn_goto_course">Goto Course</string>
 </resources>

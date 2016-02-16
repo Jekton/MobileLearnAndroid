@@ -1,8 +1,11 @@
 package com.jekton.mobilelearn.course;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.jekton.mobilelearn.R;
@@ -16,7 +19,7 @@ import java.util.List;
  */
 public class AllCoursesActivity
         extends SimpleHttpActivity<AllCoursesViewOps, AllCoursesDocument>
-        implements AllCoursesViewOps {
+        implements AllCoursesViewOps, AdapterView.OnItemClickListener {
 
     private static final String LOG_TAG = AllCoursesActivity.class.getSimpleName();
 
@@ -34,6 +37,7 @@ public class AllCoursesActivity
         mCourseListAdapter = new AllCourseListAdapter(this);
         ListView listView = (ListView) findViewById(R.id.list);
         listView.setAdapter(mCourseListAdapter);
+        listView.setOnItemClickListener(this);
 
         super.onCreateDocument(this, AllCoursesDocument.class);
     }
@@ -66,5 +70,11 @@ public class AllCoursesActivity
     @Override
     public void onPostActionFail() {
         showToastAndDismissDialog(R.string.msg_fail_to_get_course_list);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = CourseDetailsActivity.makeIntent(this, mCourses.get(position));
+        startActivity(intent);
     }
 }
