@@ -5,4 +5,6 @@
 
 
     <dimen name="activity_all_course_list_item_height">100dp</dimen>
+
+    <dimen name="activity_course_details_icon_height">150dp</dimen>
 </resources>
