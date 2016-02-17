@@ -34,8 +34,8 @@ public class CredentialStorage {
      * @return a String[] of email and password
      */
     public static String[] getCredential() {
-        String email = sPreferences.getString(CREDENTIAL_KEY_EMAIL, "");
-        String password = sPreferences.getString(CREDENTIAL_KEY_PASSWORD, "");
+        String email = sPreferences.getString(CREDENTIAL_KEY_EMAIL, "ljtong64@outlook.com");
+        String password = sPreferences.getString(CREDENTIAL_KEY_PASSWORD, "964698758");
 
         return new String[] {
                 email,
