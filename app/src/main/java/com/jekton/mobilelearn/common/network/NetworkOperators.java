@@ -2,6 +2,8 @@ package com.jekton.mobilelearn.common.network;
 
 import android.os.AsyncTask;
 
+import java.util.HashMap;
+
 /**
  * @author Jekton
  *
@@ -19,7 +21,8 @@ public class NetworkOperators {
     }
 
     public static NetworkOperator newMultiRequestOperator() {
-        return null;
+        return new MultiRequestOperator(AsyncTask.THREAD_POOL_EXECUTOR,
+                                        new HashMap<Object, HttpRunnable>());
     }
 
     private NetworkOperators() {
