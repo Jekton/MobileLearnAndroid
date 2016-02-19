@@ -25,4 +25,6 @@ public interface NetworkOperator {
     void cancelRequest(@NonNull Object key);
 
     void cancelRequests();
+
+    void shutdown();
 }

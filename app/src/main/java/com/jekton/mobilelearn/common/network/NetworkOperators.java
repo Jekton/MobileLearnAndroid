@@ -1,14 +1,12 @@
 package com.jekton.mobilelearn.common.network;
 
-import android.os.AsyncTask;
-
 import java.util.HashMap;
 
 /**
- * @author Jekton
- *
  * Note: We DO NOT want to provide static factory methods that takes an instance of
  * {@link java.util.concurrent.Executor} since it's the implementation details of our framework.
+ *
+ * @author Jekton
  */
 public class NetworkOperators {
 
@@ -17,12 +15,11 @@ public class NetworkOperators {
      * instance at a given time
      */
     public static NetworkOperator newSingleRequestOperator() {
-        return new SingleRequestOperator(AsyncTask.THREAD_POOL_EXECUTOR);
+        return new SingleRequestOperator();
     }
 
     public static NetworkOperator newMultiRequestOperator() {
-        return new MultiRequestOperator(AsyncTask.THREAD_POOL_EXECUTOR,
-                                        new HashMap<Object, HttpRunnable>());
+        return new MultiRequestOperator(new HashMap<Object, HttpRunnable>());
     }
 
     private NetworkOperators() {

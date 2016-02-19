@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -23,8 +24,8 @@ class MultiRequestOperator implements NetworkOperator {
     private final Map<Object, HttpRunnable> mRunnableHashMap;
     private final Random mRandom;
 
-    public MultiRequestOperator(Executor executor, Map<Object, HttpRunnable> map) {
-        mExecutor = executor;
+    public MultiRequestOperator(Map<Object, HttpRunnable> map) {
+        mExecutor = Executors.newFixedThreadPool(5);
         mRunnableHashMap = map;
         mRandom = new Random();
     }
@@ -108,7 +109,10 @@ class MultiRequestOperator implements NetworkOperator {
         }
     }
 
+    @Override
+    public void shutdown() {
 
+    }
 
     private class OnResponseCallbackWrapper implements OnResponseCallback {
 

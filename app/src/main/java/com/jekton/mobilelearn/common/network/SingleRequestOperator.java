@@ -2,39 +2,54 @@ package com.jekton.mobilelearn.common.network;
 
 import android.support.annotation.NonNull;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Synchronized by the instance itself
+ * A simple implementation of {@link NetworkOperator} which can handle a request at the same time.
+ *
+ * This class is thread-safe.
+ *
+ * All the method of this class will throw {@link IllegalStateException} if it has been shut down.
  *
  * @author Jekton
  */
 class SingleRequestOperator implements NetworkOperator {
 
-    private final Executor mExecutor;
-    private HttpRunnable mRunnable;
+    private final ExecutorService mExecutor;
+    private final Object mLock;
 
-    public SingleRequestOperator(Executor executor) {
-        mExecutor = executor;
+    private HttpRunnable mRunnable;
+    private volatile boolean mShutdown;
+
+    public SingleRequestOperator() {
+        mExecutor = Executors.newSingleThreadExecutor();
+        mLock = new Object();
     }
 
     @Override
     public void executeRequest(@NonNull Request request,
                                @NonNull OnResponseCallback callback) {
+        if (mShutdown) {
+            throw new IllegalStateException("Couldn't execute request while it's shut down");
+        }
 
         mRunnable = new HttpRunnable(request,
                                      new OnResponseCallbackWrapper(callback));
 
-        synchronized (this) {
+        synchronized (mLock) {
             // cancel the previous request since we can just handle a single request at a time
             if (mRunnable != null) {
                 mRunnable.cancel();
             }
-            mExecutor.execute(mRunnable);
         }
+        /**
+         * {@link HttpRunnable} guarantees that the request will not be process if it's canceled
+         */
+        mExecutor.execute(mRunnable);
     }
 
     @Override
@@ -53,14 +68,40 @@ class SingleRequestOperator implements NetworkOperator {
 
     @Override
     public void cancelRequests() {
-        synchronized (this) {
-            if (mRunnable != null) {
-                mRunnable.cancel();
-                mRunnable = null;
-            }
+        if (mShutdown) {
+            throw new IllegalStateException("Couldn't cancel a request in a shut down instance");
+        }
+
+        synchronized (mLock) {
+            cancelRequestsLocked();
         }
     }
 
+    private void cancelRequestsLocked() {
+        if (mRunnable != null) {
+            mRunnable.cancel();
+            mRunnable = null;
+        }
+    }
+
+
+    /**
+     * Shut down the {@link NetworkOperator}.
+     *
+     * This method will also cancel the executing request if it exists.
+     */
+    @Override
+    public void shutdown() {
+        if (mShutdown) {
+            throw new IllegalStateException("The instance is already shutdown.");
+        }
+
+        synchronized (mLock) {
+            cancelRequests();
+            mExecutor.shutdown();
+            mShutdown = true;
+        }
+    }
 
     private class OnResponseCallbackWrapper implements OnResponseCallback {
 
@@ -72,7 +113,7 @@ class SingleRequestOperator implements NetworkOperator {
 
         @Override
         public void onResponseSuccess(Response response) {
-            synchronized (SingleRequestOperator.this) {
+            synchronized (mLock) {
                 mRunnable = null;
             }
         }
