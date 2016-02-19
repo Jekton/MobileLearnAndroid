@@ -99,7 +99,7 @@ class MultiRequestOperator implements NetworkOperator {
 
         @Override
         public void onResponseSuccess(Response response) {
-            synchronized (MultiRequestOperator.class) {
+            synchronized (MultiRequestOperator.this) {
                 // only call the origin callback if this runnable is still in the map,
                 // otherwise, it must be canceled
                 if (mRunnableHashMap.remove(mKey) != null) {

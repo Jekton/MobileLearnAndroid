@@ -5,14 +5,17 @@ import android.support.annotation.NonNull;
 import java.util.concurrent.Executor;
 
 import okhttp3.Request;
+import okhttp3.Response;
 
 /**
+ * Synchronized by the instance itself
+ *
  * @author Jekton
  */
 class SingleRequestOperator implements NetworkOperator {
 
     private final Executor mExecutor;
-    private volatile HttpRunnable mRunnable;
+    private HttpRunnable mRunnable;
 
     public SingleRequestOperator(Executor executor) {
         mExecutor = executor;
@@ -21,13 +24,17 @@ class SingleRequestOperator implements NetworkOperator {
     @Override
     public void executeRequest(@NonNull Request request,
                                @NonNull OnResponseCallback callback) {
-        // cancel the previous request since we can just handle a single request at a time
-        if (mRunnable != null) {
-            mRunnable.cancel();
-        }
 
-        mRunnable = new HttpRunnable(request, callback);
-        mExecutor.execute(mRunnable);
+        mRunnable = new HttpRunnable(request,
+                                     new OnResponseCallbackWrapper(callback));
+
+        synchronized (this) {
+            // cancel the previous request since we can just handle a single request at a time
+            if (mRunnable != null) {
+                mRunnable.cancel();
+            }
+            mExecutor.execute(mRunnable);
+        }
     }
 
     @Override
@@ -46,7 +53,38 @@ class SingleRequestOperator implements NetworkOperator {
 
     @Override
     public void cancelRequests() {
-        mRunnable.cancel();
-        mRunnable = null;
+        synchronized (this) {
+            if (mRunnable != null) {
+                mRunnable.cancel();
+                mRunnable = null;
+            }
+        }
+    }
+
+
+    private class OnResponseCallbackWrapper implements OnResponseCallback {
+
+        private final OnResponseCallback mOriginCallback;
+
+        public OnResponseCallbackWrapper(OnResponseCallback callback) {
+            mOriginCallback = callback;
+        }
+
+        @Override
+        public void onResponseSuccess(Response response) {
+            synchronized (SingleRequestOperator.this) {
+                mRunnable = null;
+            }
+        }
+
+        @Override
+        public void onNetworkFail() {
+            mOriginCallback.onNetworkFail();
+        }
+
+        @Override
+        public void onResponseFail(Response response) {
+            mOriginCallback.onResponseFail(response);
+        }
     }
 }
