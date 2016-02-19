@@ -19,6 +19,7 @@ class HttpRunnable implements Runnable {
     private final Request mRequest;
     private final OnResponseCallback mCallback;
     private volatile Call mCall;
+    private volatile boolean canceled;
 
     public HttpRunnable(Request request, OnResponseCallback callback) {
         mRequest = request;
@@ -27,10 +28,14 @@ class HttpRunnable implements Runnable {
 
     @Override
     public void run() {
+        if (canceled) return;
+
         mCall = HttpClient.getInstance().newCall(mRequest);
 
         try {
             Response response = mCall.execute();
+            if (canceled) return;
+
             if (response.isSuccessful()) {
                 mCallback.onResponseSuccess(response);
             } else {
@@ -39,14 +44,21 @@ class HttpRunnable implements Runnable {
         } catch (IOException e) {
             Logger.d(LOG_TAG, e);
             // won't to call it back if it's canceled
-            if (mCall.isCanceled())
+            if (!mCall.isCanceled())
                 mCallback.onNetworkFail();
         }
 
     }
 
+    /**
+     * Cancel the runnable.
+     *
+     * Once it is being canceled, the callback will never be called and if it is canceled before
+     * {@link #run()} being executed, {@link #run()} will immediately return.
+     */
     public void cancel() {
-        if (!mCall.isCanceled())
+        if (mCall != null && !mCall.isCanceled())
             mCall.cancel();
+        canceled = true;
     }
 }

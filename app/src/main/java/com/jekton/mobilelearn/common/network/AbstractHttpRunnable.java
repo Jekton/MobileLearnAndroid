@@ -39,7 +39,7 @@ public abstract class AbstractHttpRunnable implements Runnable {
         } catch (IOException e) {
             Logger.d(LOG_TAG, e);
             // won't to call it back if it's canceled
-            if (mCall.isCanceled())
+            if (!mCall.isCanceled())
                 mCallback.onNetworkFail();
         }
 
