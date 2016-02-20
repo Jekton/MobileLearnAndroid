@@ -1,6 +1,7 @@
 package com.jekton.mobilelearn.common.network;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,7 +24,7 @@ class SingleRequestOperator implements NetworkOperator {
     private final Object mLock;
 
     private HttpRunnable mRunnable;
-    private volatile boolean mShutdown;
+    private boolean mShutdown;
 
     public SingleRequestOperator() {
         mExecutor = Executors.newSingleThreadExecutor();
@@ -33,14 +34,16 @@ class SingleRequestOperator implements NetworkOperator {
     @Override
     public void executeRequest(@NonNull Request request,
                                @NonNull OnResponseCallback callback) {
-        if (mShutdown) {
-            throw new IllegalStateException("Couldn't execute request while it's shut down");
-        }
 
         mRunnable = new HttpRunnable(request,
                                      new OnResponseCallbackWrapper(callback));
 
         synchronized (mLock) {
+            // it's a race condition if checking out of the critical session by making
+            // mShutdown volatile
+            if (mShutdown) {
+                throw new IllegalStateException("Couldn't execute request while it's shut down");
+            }
             // cancel the previous request since we can just handle a single request at a time
             if (mRunnable != null) {
                 mRunnable.cancel();
@@ -61,18 +64,18 @@ class SingleRequestOperator implements NetworkOperator {
     }
 
     @Override
-    public void cancelRequest(@NonNull Object key) {
+    public void cancelRequest(@Nullable Object key) {
         // there is just a single request
         cancelRequests();
     }
 
     @Override
     public void cancelRequests() {
-        if (mShutdown) {
-            throw new IllegalStateException("Couldn't cancel a request in a shut down instance");
-        }
 
         synchronized (mLock) {
+            if (mShutdown) {
+                throw new IllegalStateException("Couldn't cancel a request in a shut down instance");
+            }
             cancelRequestsLocked();
         }
     }
@@ -92,16 +95,16 @@ class SingleRequestOperator implements NetworkOperator {
      */
     @Override
     public void shutdown() {
-        if (mShutdown) {
-            throw new IllegalStateException("The instance is already shutdown.");
-        }
 
         synchronized (mLock) {
-            cancelRequests();
+            if (mShutdown) return;
+
+            cancelRequestsLocked();
             mExecutor.shutdown();
             mShutdown = true;
         }
     }
+
 
     private class OnResponseCallbackWrapper implements OnResponseCallback {
 

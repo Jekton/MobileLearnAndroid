@@ -22,7 +22,7 @@ public interface NetworkOperator {
                         @NonNull Request request,
                         @NonNull OnResponseCallback callback);
 
-    void cancelRequest(@NonNull Object key);
+    void cancelRequest(Object key);
 
     void cancelRequests();
 

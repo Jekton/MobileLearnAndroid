@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import okhttp3.Request;
@@ -20,14 +20,17 @@ import okhttp3.Response;
  */
 class MultiRequestOperator implements NetworkOperator {
 
-    private final Executor mExecutor;
+    private final ExecutorService mExecutor;
     private final Map<Object, HttpRunnable> mRunnableHashMap;
     private final Random mRandom;
+    private final Object mLock;
+    private volatile boolean shutdown;
 
     public MultiRequestOperator(Map<Object, HttpRunnable> map) {
         mExecutor = Executors.newFixedThreadPool(5);
         mRunnableHashMap = map;
         mRandom = new Random();
+        mLock = new Object();
     }
 
 
@@ -55,7 +58,7 @@ class MultiRequestOperator implements NetworkOperator {
         OnResponseCallbackWrapper wrapper = new OnResponseCallbackWrapper(key, callback);
         HttpRunnable runnable = new HttpRunnable(request, wrapper);
 
-        synchronized (this) {
+        synchronized (mLock) {
             if (key != null) {
                 cancelRequestLocked(key);
             } else {
@@ -94,14 +97,14 @@ class MultiRequestOperator implements NetworkOperator {
 
     @Override
     public void cancelRequest(@NonNull Object key) {
-        synchronized (this) {
+        synchronized (mLock) {
             cancelRequestLocked(key);
         }
     }
 
     @Override
     public void cancelRequests() {
-        synchronized (this) {
+        synchronized (mLock) {
             for (Map.Entry<Object, HttpRunnable> entry : mRunnableHashMap.entrySet()) {
                 entry.getValue().cancel();
             }
@@ -111,8 +114,10 @@ class MultiRequestOperator implements NetworkOperator {
 
     @Override
     public void shutdown() {
-
+        // TODO: 2/19/2016
     }
+
+
 
     private class OnResponseCallbackWrapper implements OnResponseCallback {
 
@@ -126,7 +131,7 @@ class MultiRequestOperator implements NetworkOperator {
 
         @Override
         public void onResponseSuccess(Response response) {
-            synchronized (MultiRequestOperator.this) {
+            synchronized (mLock) {
                 // only call the origin callback if this runnable is still in the map,
                 // otherwise, it must be canceled
                 if (mRunnableHashMap.remove(mKey) != null) {
