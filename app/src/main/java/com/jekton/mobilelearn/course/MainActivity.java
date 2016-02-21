@@ -16,6 +16,8 @@
 
 package com.jekton.mobilelearn.course;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -47,6 +49,8 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
+    private CourseListOps mListOps;
+
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] mOpTitles;
@@ -55,6 +59,7 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        super.onCreateDocument(this, MainActivityDocument.class);
 
         initDrawer();
         initSelectedItem(savedInstanceState);
@@ -123,15 +128,28 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
 
 
     private void selectItem(int position) {
+        Fragment fragment;
         if (position == 0) {  // "My Course"
             if (!CredentialStorage.isLogin()) {
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
+                return;
             }
+            // TODO: 2/21/2016
+            return;
+        } else {
+            fragment = new AllCoursesFragment();
         }
-        // TODO: 2/17/2016
-        startActivity(new Intent(this, LoginActivity.class));
 
+        // the fragment must implement this interface
+        mListOps = (CourseListOps) fragment;
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+
+        // update selected item and title, then close the drawer
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mOpTitles[position]);
         mDrawerLayout.closeDrawers();
     }
 
@@ -163,14 +181,26 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
     }
 
 
+    private void doOnCoursesChange(final List<Course> courses) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mListOps != null) {
+                    mListOps.onCoursesChange(courses);
+                }
+                closeDialog();
+            }
+        });
+    }
+
     @Override
     public void onAllCoursesChange(List<Course> courses) {
-
+        doOnCoursesChange(courses);
     }
 
     @Override
     public void onMyCoursesChange(List<Course> courses) {
-
+        doOnCoursesChange(courses);
     }
 
     @Override
@@ -181,5 +211,10 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
     @Override
     public void onNetworkError() {
         showToastAndDismissDialog(R.string.err_network_error);
+    }
+
+
+    interface CourseListOps {
+        void onCoursesChange(List<Course> courses);
     }
 }

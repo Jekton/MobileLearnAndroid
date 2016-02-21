@@ -17,7 +17,7 @@ public class DialogEnabledActivity<ViewOps, DocumentOps extends BasicDocumentOps
     private ProgressDialog mProgressDialog;
 
     @UiThread
-    protected void showDialog() {
+    public void showDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
         }
@@ -25,17 +25,17 @@ public class DialogEnabledActivity<ViewOps, DocumentOps extends BasicDocumentOps
     }
 
     @UiThread
-    protected void closeDialog() {
+    public void closeDialog() {
         mProgressDialog.dismiss();
     }
 
     @UiThread
-    protected void cancelDialog() {
+    public void cancelDialog() {
         mProgressDialog.cancel();
     }
 
 
-    protected void showToastAndDismissDialog(@StringRes final int msgId) {
+    public void showToastAndDismissDialog(@StringRes final int msgId) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

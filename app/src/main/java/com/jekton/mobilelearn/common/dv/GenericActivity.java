@@ -74,7 +74,7 @@ public abstract class GenericActivity<ViewOps, DocumentOps extends BasicDocument
     }
 
 
-    protected DocumentOps getDocument() {
+    public DocumentOps getDocument() {
         return mDocument;
     }
 
