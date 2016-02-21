@@ -1,4 +1,4 @@
-package com.jekton.mobilelearn.common.network;
+package com.jekton.mobilelearn.common.network.operator;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,7 +9,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * {@link NetworkOperator} that support multiple request to be executed at a time.
@@ -55,7 +54,7 @@ class MultiRequestOperator implements NetworkOperator {
     private void execute(@Nullable Object key,
                          @NonNull Request request,
                          @NonNull OnResponseCallback callback) {
-        OnResponseCallbackWrapper wrapper = new OnResponseCallbackWrapper(key, callback);
+        RequestCompletion wrapper = new RequestCompletion(key, callback);
         HttpRunnable runnable = new HttpRunnable(request, wrapper);
 
         synchronized (mLock) {
@@ -131,37 +130,26 @@ class MultiRequestOperator implements NetworkOperator {
 
 
 
-    private class OnResponseCallbackWrapper implements OnResponseCallback {
+    private class RequestCompletion extends AbstractRequestCompletion {
 
         private final Object mKey;
-        private final OnResponseCallback mOriginCallback;
 
-        public OnResponseCallbackWrapper(Object key, OnResponseCallback callback) {
+        public RequestCompletion(Object key, OnResponseCallback callback) {
+            super(callback);
             mKey = key;
-            mOriginCallback = callback;
         }
 
         @Override
-        public void onResponseSuccess(Response response) {
+        protected boolean cleanAndCheck() {
             synchronized (mLock) {
                 // only call the origin callback if this runnable is still in the map and the
                 // NetworkOperator has not been shut down.
                 // otherwise, it must be canceled
                 if (mShutdown || mRunnableHashMap.remove(mKey) == null) {
-                    return;
+                    return false;
                 }
             }
-            mOriginCallback.onResponseSuccess(response);
-        }
-
-        @Override
-        public void onNetworkFail() {
-            mOriginCallback.onNetworkFail();
-        }
-
-        @Override
-        public void onResponseFail(Response response) {
-            mOriginCallback.onResponseFail(response);
+            return true;
         }
     }
 }

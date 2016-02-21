@@ -1,4 +1,4 @@
-package com.jekton.mobilelearn.common.network;
+package com.jekton.mobilelearn.common.network.operator;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,7 +7,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * A simple implementation of {@link NetworkOperator} which can handle a request at the same time.
@@ -36,7 +35,7 @@ class SingleRequestOperator implements NetworkOperator {
                                @NonNull OnResponseCallback callback) {
 
         mRunnable = new HttpRunnable(request,
-                                     new OnResponseCallbackWrapper(callback));
+                                     new RequestCompletion(callback));
 
         synchronized (mLock) {
             // it's a race condition if checking out of the critical session by making
@@ -106,29 +105,24 @@ class SingleRequestOperator implements NetworkOperator {
     }
 
 
-    private class OnResponseCallbackWrapper implements OnResponseCallback {
 
-        private final OnResponseCallback mOriginCallback;
+    private class RequestCompletion extends AbstractRequestCompletion {
 
-        public OnResponseCallbackWrapper(OnResponseCallback callback) {
-            mOriginCallback = callback;
+        public RequestCompletion(OnResponseCallback callback) {
+            super(callback);
         }
 
         @Override
-        public void onResponseSuccess(Response response) {
+        protected boolean cleanAndCheck() {
             synchronized (mLock) {
-                mRunnable = null;
+                if (mRunnable == null) {
+                    return false;
+                } else {
+                    mRunnable = null;
+                    return true;
+                }
             }
         }
-
-        @Override
-        public void onNetworkFail() {
-            mOriginCallback.onNetworkFail();
-        }
-
-        @Override
-        public void onResponseFail(Response response) {
-            mOriginCallback.onResponseFail(response);
-        }
     }
+
 }

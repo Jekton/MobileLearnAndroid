@@ -2,6 +2,7 @@ package com.jekton.mobilelearn.common.network;
 
 import android.support.annotation.NonNull;
 
+import com.jekton.mobilelearn.common.network.operator.OnResponseCallback;
 import com.jekton.mobilelearn.common.util.Logger;
 
 import java.io.IOException;
@@ -11,6 +12,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
+ * @deprecated Use the {@link com.jekton.mobilelearn.common.network.operator.NetworkOperator}
+ * framework instead
+ *
  * @author Jekton
  */
 public abstract class AbstractHttpRunnable implements Runnable {

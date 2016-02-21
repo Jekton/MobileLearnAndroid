@@ -1,5 +1,6 @@
-package com.jekton.mobilelearn.common.network;
+package com.jekton.mobilelearn.common.network.operator;
 
+import com.jekton.mobilelearn.common.network.HttpClient;
 import com.jekton.mobilelearn.common.util.Logger;
 
 import java.io.IOException;

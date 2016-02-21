@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import com.jekton.mobilelearn.common.dv.AbstractDocument;
 import com.jekton.mobilelearn.common.network.AbstractHttpRunnable;
-import com.jekton.mobilelearn.common.network.OnResponseCallback;
+import com.jekton.mobilelearn.common.network.operator.OnResponseCallback;
 
 import okhttp3.Response;
 

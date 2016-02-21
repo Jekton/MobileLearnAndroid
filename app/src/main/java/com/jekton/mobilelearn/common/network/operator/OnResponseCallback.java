@@ -1,4 +1,4 @@
-package com.jekton.mobilelearn.common.network;
+package com.jekton.mobilelearn.common.network.operator;
 
 import okhttp3.Response;
 

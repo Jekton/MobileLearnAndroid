@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.jekton.mobilelearn.common.dv.network.SimpleHttpDocument;
 import com.jekton.mobilelearn.common.network.AbstractHttpRunnable;
-import com.jekton.mobilelearn.common.network.OnResponseCallback;
+import com.jekton.mobilelearn.common.network.operator.OnResponseCallback;
 import com.jekton.mobilelearn.network.UrlConstants;
 
 import okhttp3.FormBody;
