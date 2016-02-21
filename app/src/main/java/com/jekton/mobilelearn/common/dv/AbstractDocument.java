@@ -14,9 +14,16 @@ public abstract class AbstractDocument<ViewOps> implements BasicDocumentOps<View
      * Since we can't rely the client to call us back while the Activity is automatically
      * being destroyed and re-constructed, we must use a WeakReference here.
      */
-    private WeakReference<ViewOps> mReference;
+    private volatile WeakReference<ViewOps> mReference;
     private volatile boolean isDestroyed;
 
+
+    @Override
+    public void onCreate() {
+        // no-op
+        // since this is the later added method, add this default implementation to avoid damage
+        // the client
+    }
 
     @Override
     @CallSuper

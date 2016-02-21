@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="main_activity_ops">
+    <string-array name="main_activity_drawers">
         <item>My Courses</item>
         <item>All Courses</item>
         <item>Logout</item>

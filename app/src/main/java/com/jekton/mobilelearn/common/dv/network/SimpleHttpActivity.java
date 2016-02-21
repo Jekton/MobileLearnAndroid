@@ -4,10 +4,11 @@ import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
 
 /**
- * @author Jekton
- *
  * This class is design to interact with {@link SimpleHttpDocument} and so it's expecting the
  * parameter type Document to extend {@link SimpleHttpDocument}
+ *
+ * @deprecated
+ * @author Jekton
  */
 public abstract class SimpleHttpActivity<ViewOps extends OnDocumentFail,
                                 Document extends SimpleHttpDocument<ViewOps>>

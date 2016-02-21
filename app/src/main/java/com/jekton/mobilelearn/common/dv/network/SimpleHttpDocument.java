@@ -9,11 +9,12 @@ import com.jekton.mobilelearn.common.network.operator.OnResponseCallback;
 import okhttp3.Response;
 
 /**
- * @author Jekton
- *
  * Note: this class expects the client to run HTTP request one-by-one, that is, if the client wanna
  * start a second Http request by calling {@link #doHttpRequest(AbstractHttpRunnable)}, the first
  * one must be finished or canceled.
+ *
+ * @deprecated
+ * @author Jekton
  */
 public abstract class SimpleHttpDocument<ViewOps extends OnDocumentFail>
         extends AbstractDocument<ViewOps>

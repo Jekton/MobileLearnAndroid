@@ -58,7 +58,7 @@ public class AllCoursesActivity
     }
 
     @Override
-    public void onCoursesChange(final List<Course> courses) {
+    public void onAllCoursesChange(final List<Course> courses) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

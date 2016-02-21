@@ -21,8 +21,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,9 +30,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.jekton.mobilelearn.R;
+import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
+import com.jekton.mobilelearn.common.network.CredentialStorage;
 import com.jekton.mobilelearn.login.LoginActivity;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+import java.util.List;
+
+public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainActivityDocumentOps>
+        implements AdapterView.OnItemClickListener, MainActivityOps {
+
+    private static final int DRAWER_ITEM_MY_COURSES = 0;
+    private static final int DRAWER_ITEM_ALL_COURSES = 1;
+    private static final int DRAWER_ITEM_LOGOUT = 2;
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -46,8 +56,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initDrawer();
+        initSelectedItem(savedInstanceState);
+    }
+
+    private void initDrawer() {
         mTitle = mDrawerTitle = getTitle();
-        mOpTitles = getResources().getStringArray(R.array.main_activity_ops);
+        mOpTitles = getResources().getStringArray(R.array.main_activity_drawers);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -72,21 +87,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 R.string.drawer_close
         ) {
             public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(mTitle);
+                ActionBar actionBar = getSupportActionBar();
+                if (actionBar != null) {
+                    actionBar.setTitle(mTitle);
+                }
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mDrawerTitle);
+                ActionBar actionBar = getSupportActionBar();
+                if (actionBar != null) {
+                    actionBar.setTitle(mDrawerTitle);
+                }
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
 
+    private void initSelectedItem(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            selectItem(0);
+            int selection = DRAWER_ITEM_ALL_COURSES;
+            if (CredentialStorage.isLogin()) {
+                selection = DRAWER_ITEM_MY_COURSES;
+            }
+            selectItem(selection);
         }
     }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -94,16 +122,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-
     private void selectItem(int position) {
+        if (position == 0) {  // "My Course"
+            if (!CredentialStorage.isLogin()) {
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+            }
+        }
         // TODO: 2/17/2016
         startActivity(new Intent(this, LoginActivity.class));
+
+        mDrawerLayout.closeDrawers();
     }
 
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(mTitle);
+        }
     }
 
     /**
@@ -125,4 +163,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
+    @Override
+    public void onAllCoursesChange(List<Course> courses) {
+
+    }
+
+    @Override
+    public void onMyCoursesChange(List<Course> courses) {
+
+    }
+
+    @Override
+    public void onGetCoursesFail() {
+        showToastAndDismissDialog(R.string.msg_fail_to_get_course_list);
+    }
+
+    @Override
+    public void onNetworkError() {
+        showToastAndDismissDialog(R.string.err_network_error);
+    }
 }

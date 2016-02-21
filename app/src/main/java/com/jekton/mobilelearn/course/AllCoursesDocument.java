@@ -38,7 +38,7 @@ class AllCoursesDocument
             Course[] courses = gson.fromJson(response.body().string(), Course[].class);
             AllCoursesViewOps view = getView();
             if (view != null) {
-                view.onCoursesChange(Arrays.asList(courses));
+                view.onAllCoursesChange(Arrays.asList(courses));
             }
         } catch (IOException e) {
             Logger.e(LOG_TAG, e);
