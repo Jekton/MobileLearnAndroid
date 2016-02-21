@@ -11,22 +11,21 @@ import com.jekton.mobilelearn.MyApplication;
 public class CredentialStorage {
 
     private static final String SP_CREDENTIAL_NAME = "SP_CREDENTIAL_NAME";
-    private static final String CREDENTIAL_KEY_EMAIL = "CREDENTIAL_KEY_EMAIL";
-    private static final String CREDENTIAL_KEY_PASSWORD = "CREDENTIAL_KEY_PASSWORD";
+    private static final String KEY_EMAIL = "KEY_EMAIL";
+    private static final String KEY_PASSWORD = "KEY_PASSWORD";
+    private static final String KEY_LOGGED_IN = "KEY_LOGGED_IN";
 
-    private static SharedPreferences sPreferences;
-
-    static {
-        sPreferences = MyApplication.getInstance()
-                .getSharedPreferences(SP_CREDENTIAL_NAME,
-                                      Context.MODE_PRIVATE);
-    }
 
 
     public static void storeCredential(String email, String password) {
-        SharedPreferences.Editor editor = sPreferences.edit();
-        editor.putString(CREDENTIAL_KEY_EMAIL, email);
-        editor.putString(CREDENTIAL_KEY_PASSWORD, password);
+        SharedPreferences preferences = MyApplication.getInstance()
+                .getSharedPreferences(SP_CREDENTIAL_NAME,
+                                      Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_PASSWORD, password);
+        editor.putBoolean(KEY_LOGGED_IN, true);
         editor.apply();
     }
 
@@ -34,8 +33,12 @@ public class CredentialStorage {
      * @return a String[] of email and password
      */
     public static String[] getCredential() {
-        String email = sPreferences.getString(CREDENTIAL_KEY_EMAIL, "ljtong64@outlook.com");
-        String password = sPreferences.getString(CREDENTIAL_KEY_PASSWORD, "964698758");
+        SharedPreferences preferences = MyApplication.getInstance()
+                .getSharedPreferences(SP_CREDENTIAL_NAME,
+                                      Context.MODE_PRIVATE);
+
+        String email = preferences.getString(KEY_EMAIL, "ljtong64@outlook.com");
+        String password = preferences.getString(KEY_PASSWORD, "964698758");
 
         return new String[] {
                 email,
@@ -43,6 +46,13 @@ public class CredentialStorage {
         };
     }
 
+
+    public static boolean isLogin() {
+        SharedPreferences preferences = MyApplication.getInstance()
+                .getSharedPreferences(SP_CREDENTIAL_NAME,
+                                      Context.MODE_PRIVATE);
+        return preferences.getBoolean(KEY_LOGGED_IN, false);
+    }
 
 
     private CredentialStorage() {
