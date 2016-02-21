@@ -11,7 +11,7 @@ import okhttp3.RequestBody;
  */
 public class HttpUtils {
 
-    static Request makeLoginRequest(String email, String password) {
+    public static Request makeLoginRequest(String email, String password) {
         RequestBody formBody = new FormBody.Builder()
                 .add("email", email)
                 .add("password", password)
@@ -23,10 +23,14 @@ public class HttpUtils {
                 .build();
     }
 
-    static Request makeLoginRequest() {
+    public static Request makeLoginRequest() {
         String[] credential = CredentialStorage.getCredential();
 
         return makeLoginRequest(credential[0], credential[1]);
+    }
+
+    public static Request makeGetRequest(String url) {
+        return new Request.Builder().url(url).build();
     }
 
     private HttpUtils() {
