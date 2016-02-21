@@ -33,6 +33,7 @@ public class MainActivityDocument extends AbstractDocument<MainActivityOps>
 
     @Override
     public void onGettingAllCourses() {
+        mNetworkOperator.cancelRequest(REQUEST_MY_COURSES);
         mNetworkOperator.executeRequest(
                 REQUEST_ALL_COURSES,
                 HttpUtils.makeGetRequest(UrlConstants.GET_ALL_COURSES),
@@ -48,6 +49,7 @@ public class MainActivityDocument extends AbstractDocument<MainActivityOps>
 
     @Override
     public void onGettingMyCourses() {
+        mNetworkOperator.cancelRequest(REQUEST_ALL_COURSES);
         mNetworkOperator.executeRequest(
                 REQUEST_MY_COURSES,
                 HttpUtils.makeGetRequest(UrlConstants.GET_TAKEN_COURSES),
