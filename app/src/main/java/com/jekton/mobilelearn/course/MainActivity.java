@@ -241,8 +241,10 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
     }
 
 
-    interface CourseListOps {
+    public interface CourseListOps {
+
         void onCoursesChange(List<Course> courses);
+
     }
 
 
