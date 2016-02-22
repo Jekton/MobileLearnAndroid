@@ -37,8 +37,8 @@ public class CredentialStorage {
                 .getSharedPreferences(SP_CREDENTIAL_NAME,
                                       Context.MODE_PRIVATE);
 
-        String email = preferences.getString(KEY_EMAIL, "ljtong64@outlook.com");
-        String password = preferences.getString(KEY_PASSWORD, "964698758");
+        String email = preferences.getString(KEY_EMAIL, "");
+        String password = preferences.getString(KEY_PASSWORD, "");
 
         return new String[] {
                 email,

@@ -1,5 +1,6 @@
 package com.jekton.mobilelearn.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -9,6 +10,7 @@ import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.dv.network.SimpleHttpActivity;
 import com.jekton.mobilelearn.common.network.CredentialStorage;
 import com.jekton.mobilelearn.common.util.Toaster;
+import com.jekton.mobilelearn.course.MainActivity;
 
 /**
  * @author Jekton
@@ -39,7 +41,9 @@ public class LoginActivity extends SimpleHttpActivity<LoginViewOps, LoginDocumen
             public void run() {
                 Toaster.showShort(LoginActivity.this, R.string.msg_login_success);
                 CredentialStorage.storeCredential(email, password);
-                // TODO: 2/13/2016  go to user taken course page
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         });
     }

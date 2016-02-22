@@ -135,8 +135,7 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
                 startActivity(intent);
                 return;
             }
-            // TODO: 2/21/2016
-            return;
+            fragment = new MyCoursesFragment();
         } else {
             fragment = new AllCoursesFragment();
         }
@@ -216,5 +215,39 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
 
     interface CourseListOps {
         void onCoursesChange(List<Course> courses);
+    }
+
+
+
+
+
+
+    public static class AllCoursesFragment extends CourseListFragment {
+
+        @Override
+        protected void initCourseList() {
+            getMainActivity().getDocument().onGettingAllCourses();
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = CourseDetailsActivity.makeIntent(getActivity(), getCourses().get(position));
+            startActivity(intent);
+        }
+    }
+
+    public static class MyCoursesFragment extends CourseListFragment {
+
+        @Override
+        protected void initCourseList() {
+            getMainActivity().getDocument().onGettingMyCourses();
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            // TODO: 2/22/2016
+            Intent intent = CourseDetailsActivity.makeIntent(getActivity(), getCourses().get(position));
+            startActivity(intent);
+        }
     }
 }
