@@ -7,6 +7,7 @@ import android.widget.EditText;
 import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.dv.network.SimpleHttpActivity;
 import com.jekton.mobilelearn.common.network.CredentialStorage;
+import com.jekton.mobilelearn.common.util.NavigationUtil;
 import com.jekton.mobilelearn.common.util.Toaster;
 
 /**
@@ -53,7 +54,7 @@ public class RegisterActivity extends SimpleHttpActivity<RegisterViewOps, Regist
             public void run() {
                 Toaster.showShort(RegisterActivity.this, R.string.msg_register_success);
                 CredentialStorage.storeCredential(email, password);
-                // TODO: 2/13/2016  go to add course page
+                NavigationUtil.gotoMainActivity(RegisterActivity.this);
             }
         });
     }

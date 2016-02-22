@@ -32,11 +32,20 @@
         android:inputType="textPassword"/>
 
     <Button
-        android:id="@+id/register"
+        android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:text="@string/login"
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/register"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
         android:textAllCaps="false"/>
 

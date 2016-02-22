@@ -11,4 +11,5 @@ interface MainActivityDocumentOps extends BasicDocumentOps<MainActivityOps> {
 
     void onGettingMyCourses();
 
+    void onLogout();
 }

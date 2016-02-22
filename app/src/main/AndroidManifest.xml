@@ -17,7 +17,9 @@
 
         <activity android:name=".login.LoginActivity"/>
 
-        <activity android:name=".course.MainActivity">
+        <activity
+            android:name=".course.MainActivity"
+            android:theme="@style/MainActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

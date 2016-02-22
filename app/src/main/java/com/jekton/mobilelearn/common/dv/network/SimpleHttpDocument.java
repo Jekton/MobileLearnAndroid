@@ -29,8 +29,10 @@ public abstract class SimpleHttpDocument<ViewOps extends OnDocumentFail>
     }
 
     public void cancelNetworkOp() {
-        mHttpRunnable.cancel();
-        mHttpRunnable = null;
+        if (mHttpRunnable != null) {
+            mHttpRunnable.cancel();
+            mHttpRunnable = null;
+        }
     }
 
     @Override

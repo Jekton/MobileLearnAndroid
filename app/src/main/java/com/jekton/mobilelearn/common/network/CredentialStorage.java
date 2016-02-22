@@ -2,6 +2,7 @@ package com.jekton.mobilelearn.common.network;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import com.jekton.mobilelearn.MyApplication;
 
@@ -32,7 +33,7 @@ public class CredentialStorage {
     /**
      * @return a String[] of email and password
      */
-    public static String[] getCredential() {
+    public static @NonNull String[] getCredential() {
         SharedPreferences preferences = MyApplication.getInstance()
                 .getSharedPreferences(SP_CREDENTIAL_NAME,
                                       Context.MODE_PRIVATE);
@@ -52,6 +53,16 @@ public class CredentialStorage {
                 .getSharedPreferences(SP_CREDENTIAL_NAME,
                                       Context.MODE_PRIVATE);
         return preferences.getBoolean(KEY_LOGGED_IN, false);
+    }
+
+    public static void setLogin(boolean isLogin) {
+        SharedPreferences preferences = MyApplication.getInstance()
+                .getSharedPreferences(SP_CREDENTIAL_NAME,
+                                      Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(KEY_LOGGED_IN, isLogin);
+        editor.apply();
     }
 
 

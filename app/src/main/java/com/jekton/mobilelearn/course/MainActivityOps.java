@@ -11,6 +11,8 @@ interface MainActivityOps {
 
     void onMyCoursesChange(List<Course> courses);
 
+    void onLogoutSuccess();
+
     void onGetCoursesFail();
 
     void onNetworkError();

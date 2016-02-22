@@ -27,6 +27,7 @@ public class MainActivityDocument extends AbstractDocument<MainActivityOps>
 
     private static final int REQUEST_ALL_COURSES = 0;
     private static final int REQUEST_MY_COURSES = 1;
+    private static final int REQUEST_LOGOUT = 2;
 
     private NetworkOperator mNetworkOperator = NetworkOperators.newMultiRequestOperator();
 
@@ -58,6 +59,40 @@ public class MainActivityDocument extends AbstractDocument<MainActivityOps>
                     protected void onSuccess(@NonNull MainActivityOps view,
                                              @NonNull List<Course> courses) {
                         view.onMyCoursesChange(courses);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void onLogout() {
+        mNetworkOperator.cancelRequest(REQUEST_ALL_COURSES);
+        mNetworkOperator.executeRequest(
+                REQUEST_LOGOUT,
+                HttpUtils.makeGetRequest(UrlConstants.LOGOUT),
+                new OnResponseCallback() {
+                    @Override
+                    public void onResponseSuccess(Response response) {
+                        MainActivityOps view = getView();
+                        if (view != null) {
+                            view.onLogoutSuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onNetworkFail() {
+                        MainActivityOps view = getView();
+                        if (view != null) {
+                            view.onNetworkError();
+                        }
+                    }
+
+                    @Override
+                    public void onResponseFail(Response response) {
+                        MainActivityOps view = getView();
+                        if (view != null) {
+                            view.onGetCoursesFail();
+                        }
                     }
                 }
         );

@@ -47,6 +47,7 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private int mPreviousSelection;
     private ActionBarDrawerToggle mDrawerToggle;
 
     private CourseListOps mListOps;
@@ -117,6 +118,7 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
                 selection = DRAWER_ITEM_MY_COURSES;
             }
             selectItem(selection);
+            mPreviousSelection = selection;
         }
     }
 
@@ -126,21 +128,29 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
         selectItem(position);
     }
 
-
     private void selectItem(int position) {
         Fragment fragment;
-        if (position == 0) {  // "My Course"
-            if (!CredentialStorage.isLogin()) {
-                Intent intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
+        switch (position) {
+            case DRAWER_ITEM_MY_COURSES:
+                if (!CredentialStorage.isLogin()) {
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                    mDrawerList.setItemChecked(mPreviousSelection, true);
+                    return;
+                }
+                fragment = new MyCoursesFragment();
+                break;
+            case DRAWER_ITEM_ALL_COURSES:
+                fragment = new AllCoursesFragment();
+                break;
+            case DRAWER_ITEM_LOGOUT:
+                showDialog();
+                getDocument().onLogout();
                 return;
-            }
-            fragment = new MyCoursesFragment();
-        } else {
-            fragment = new AllCoursesFragment();
+            default:
+                throw new IllegalStateException("Unknown position " + position);
         }
 
-        // the fragment must implement this interface
         mListOps = (CourseListOps) fragment;
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -148,9 +158,11 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
+        mPreviousSelection = position;
         setTitle(mOpTitles[position]);
         mDrawerLayout.closeDrawers();
     }
+
 
     @Override
     public void setTitle(CharSequence title) {
@@ -203,6 +215,22 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
     }
 
     @Override
+    public void onLogoutSuccess() {
+        runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        CredentialStorage.setLogin(false);
+                        selectItem(DRAWER_ITEM_ALL_COURSES);
+                        // since we are immediately selection the "all courses" page, which will
+                        // trigger the networking, there is no need in here to close the dialog
+                        // closeDialog();
+                    }
+                }
+        );
+    }
+
+    @Override
     public void onGetCoursesFail() {
         showToastAndDismissDialog(R.string.msg_fail_to_get_course_list);
     }
@@ -218,10 +246,6 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
     }
 
 
-
-
-
-
     public static class AllCoursesFragment extends CourseListFragment {
 
         @Override
@@ -235,6 +259,7 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
             startActivity(intent);
         }
     }
+
 
     public static class MyCoursesFragment extends CourseListFragment {
 
