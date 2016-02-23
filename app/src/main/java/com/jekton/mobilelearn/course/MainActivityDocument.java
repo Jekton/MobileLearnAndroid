@@ -29,7 +29,7 @@ public class MainActivityDocument extends AbstractDocument<MainActivityOps>
     private static final int REQUEST_MY_COURSES = 1;
     private static final int REQUEST_LOGOUT = 2;
 
-    private NetworkOperator mNetworkOperator = NetworkOperators.newMultiRequestOperator();
+    private NetworkOperator mNetworkOperator = NetworkOperators.getMultiRequestOperator();
 
 
     @Override
