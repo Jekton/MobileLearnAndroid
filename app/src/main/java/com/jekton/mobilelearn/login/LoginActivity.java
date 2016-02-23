@@ -49,7 +49,7 @@ public class LoginActivity extends SimpleHttpActivity<LoginViewOps, LoginDocumen
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toaster.showShort(LoginActivity.this, R.string.msg_login_success);
+                Toaster.showShort(LoginActivity.this, R.string.msg_success_login);
                 CredentialStorage.storeCredential(email, password);
                 NavigationUtil.gotoMainActivity(LoginActivity.this);
             }
@@ -60,7 +60,7 @@ public class LoginActivity extends SimpleHttpActivity<LoginViewOps, LoginDocumen
 
     @Override
     public void onPostActionFail() {
-        showToastAndDismissDialog(R.string.msg_login_fail);
+        showToastAndDismissDialog(R.string.msg_fail_login);
     }
 
 

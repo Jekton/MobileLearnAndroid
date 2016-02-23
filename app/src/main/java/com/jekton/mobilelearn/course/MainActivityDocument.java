@@ -20,7 +20,7 @@ import okhttp3.Response;
 /**
  * @author Jekton
  */
-public class MainActivityDocument extends AbstractDocument<MainActivityOps>
+class MainActivityDocument extends AbstractDocument<MainActivityOps>
         implements MainActivityDocumentOps {
 
     public static final String LOG_TAG = MainActivityDocument.class.getSimpleName();

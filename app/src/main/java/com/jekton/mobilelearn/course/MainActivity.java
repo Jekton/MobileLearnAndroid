@@ -232,7 +232,7 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
 
     @Override
     public void onGetCoursesFail() {
-        showToastAndDismissDialog(R.string.msg_fail_to_get_course_list);
+        showToastAndDismissDialog(R.string.msg_fail_get_course_list);
     }
 
     @Override

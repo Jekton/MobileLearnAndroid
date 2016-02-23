@@ -12,16 +12,18 @@
 
 
 
-    <string name="msg_register_success">Register success</string>
-    <string name="msg_register_fail">Register fail</string>
+    <string name="msg_success_register">Register success</string>
+    <string name="msg_fail_register">Register fail</string>
 
-    <string name="msg_login_success">Login success</string>
-    <string name="msg_login_fail">Login fail</string>
+    <string name="msg_success_login">Login success</string>
+    <string name="msg_fail_login">Login fail</string>
 
-    <string name="msg_fail_to_get_course_list">Fail to get course list</string>
+    <string name="msg_fail_get_course_list">Fail to get course list</string>
 
-    <string name="msg_take_course_fail">Fail to take course</string>
-    <string name="msg_take_course_success">Course taken</string>
+    <string name="msg_fail_take_course">Fail to take course</string>
+    <string name="msg_success_take_course">Course taken</string>
+
+    <string name="msg_fail_get_course_info">Fail to get course info</string>
 
     <string name="temp_course_name">Course Name: %1$s</string>
     <string name="temp_course_desc">Description: %1$s</string>

@@ -52,7 +52,7 @@ public class RegisterActivity extends SimpleHttpActivity<RegisterViewOps, Regist
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toaster.showShort(RegisterActivity.this, R.string.msg_register_success);
+                Toaster.showShort(RegisterActivity.this, R.string.msg_success_register);
                 CredentialStorage.storeCredential(email, password);
                 NavigationUtil.gotoMainActivity(RegisterActivity.this);
             }
@@ -62,6 +62,6 @@ public class RegisterActivity extends SimpleHttpActivity<RegisterViewOps, Regist
 
     @Override
     public void onPostActionFail() {
-        showToastAndDismissDialog(R.string.msg_register_fail);
+        showToastAndDismissDialog(R.string.msg_fail_register);
     }
 }

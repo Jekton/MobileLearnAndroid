@@ -86,7 +86,7 @@ public class CourseDetailsActivity
             @Override
             public void run() {
                 mButton.setText(R.string.btn_goto_course);
-                Toaster.showShort(CourseDetailsActivity.this, R.string.msg_take_course_success);
+                Toaster.showShort(CourseDetailsActivity.this, R.string.msg_success_take_course);
                 closeDialog();
                 mCourse.taken = true;
             }
@@ -95,7 +95,7 @@ public class CourseDetailsActivity
 
     @Override
     public void onPostActionFail() {
-        showToastAndDismissDialog(R.string.msg_take_course_fail);
+        showToastAndDismissDialog(R.string.msg_fail_take_course);
     }
 
 
