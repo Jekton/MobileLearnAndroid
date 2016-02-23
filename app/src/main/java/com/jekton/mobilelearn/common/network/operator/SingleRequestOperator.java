@@ -17,7 +17,7 @@ import okhttp3.Request;
  *
  * @author Jekton
  */
-class SingleRequestOperator implements NetworkOperator {
+class SingleRequestOperator implements NetworkOperatorService {
 
     private final ExecutorService mExecutor;
     private final Object mLock;

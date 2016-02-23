@@ -17,7 +17,7 @@ import okhttp3.Request;
  *
  * @author Jekton
  */
-class MultiRequestOperator implements NetworkOperator {
+class MultiRequestOperator implements NetworkOperatorService {
 
     private final ExecutorService mExecutor;
     private final Map<Object, HttpRunnable> mRunnableHashMap;

@@ -38,11 +38,11 @@ public class NetworkOperators {
      * @return a {@link NetworkOperator} that can just handle {@link okhttp3.Request} exactly one
      * instance at a given time
      */
-    public static NetworkOperator newSingleRequestOperator() {
+    public static NetworkOperatorService newSingleRequestOperator() {
         return new SingleRequestOperator();
     }
 
-    public static NetworkOperator newMultiRequestOperator() {
+    public static NetworkOperatorService newMultiRequestOperator() {
         return new MultiRequestOperator(new HashMap<Object, HttpRunnable>());
     }
 
