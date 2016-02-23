@@ -98,11 +98,6 @@ class MainActivityDocument extends AbstractDocument<MainActivityOps>
         );
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mNetworkOperator.shutdown();
-    }
 
 
     private abstract class ResponseCallback implements OnResponseCallback {
