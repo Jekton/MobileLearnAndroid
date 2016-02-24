@@ -29,6 +29,8 @@
 
         <activity android:name=".course.CourseDetailsActivity" />
 
+        <activity android:name=".course.CourseLearningActivity" />
+
     </application>
 
 </manifest>

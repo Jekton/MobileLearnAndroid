@@ -20,7 +20,7 @@ class HttpRunnable implements Runnable {
     private final Request mRequest;
     private final OnResponseCallback mCallback;
     private volatile Call mCall;
-    private volatile boolean canceled;
+    private volatile boolean mCanceled;
 
     public HttpRunnable(Request request, OnResponseCallback callback) {
         mRequest = request;
@@ -29,13 +29,13 @@ class HttpRunnable implements Runnable {
 
     @Override
     public void run() {
-        if (canceled) return;
-
+        Logger.d(LOG_TAG, "run() mCanceled = " + mCanceled);
+        if (mCanceled) return;
         mCall = HttpClient.getInstance().newCall(mRequest);
 
         try {
             Response response = mCall.execute();
-            if (canceled) return;
+            if (mCanceled) return;
 
             if (response.isSuccessful()) {
                 mCallback.onResponseSuccess(response);
@@ -44,7 +44,7 @@ class HttpRunnable implements Runnable {
             }
         } catch (IOException e) {
             Logger.d(LOG_TAG, e);
-            // won't to call it back if it's canceled
+            // won't to call it back if it's mCanceled
             if (!mCall.isCanceled())
                 mCallback.onNetworkFail();
         }
@@ -54,12 +54,12 @@ class HttpRunnable implements Runnable {
     /**
      * Cancel the runnable.
      *
-     * Once it is being canceled, the callback will never be called and if it is canceled before
+     * Once it is being mCanceled, the callback will never be called and if it is mCanceled before
      * {@link #run()} being executed, {@link #run()} will immediately return.
      */
     public void cancel() {
         if (mCall != null && !mCall.isCanceled())
             mCall.cancel();
-        canceled = true;
+        mCanceled = true;
     }
 }

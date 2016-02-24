@@ -272,8 +272,8 @@ public class MainActivity extends DialogEnabledActivity<MainActivityOps, MainAct
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            // TODO: 2/22/2016
-            Intent intent = CourseDetailsActivity.makeIntent(getActivity(), getCourses().get(position));
+            Intent intent = CourseLearningActivity.makeIntent(getActivity(),
+                                                              getCourses().get(position)._id);
             startActivity(intent);
         }
     }

@@ -72,7 +72,7 @@ public class AllCourseListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         ImageView iconImageView;
         TextView courseNameTextView;
         TextView courseDescTextView;

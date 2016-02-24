@@ -26,11 +26,13 @@ public class CourseLearningDocument extends AbstractDocument<CourseLearningViewO
 
     @Override
     public void getCourseInfo(String courseId) {
-        Request request = HttpUtils.makeGetRequest(
-                String.format(UrlConstants.GET_TAKEN_COURSE_TEMPLATE, courseId));
+        String url = String.format(UrlConstants.GET_TAKEN_COURSE_TEMPLATE, courseId);
+        Logger.d(LOG_TAG, "url = " + url);
+        Request request = HttpUtils.makeGetRequest(url);
         mNetworkOperator.executeRequest(request, new OnResponseCallback() {
             @Override
             public void onResponseSuccess(Response response) {
+                Logger.d(LOG_TAG, "onResponseSuccess");
                 CourseLearningViewOps view = getView();
                 if (view != null) {
                     try {
@@ -45,6 +47,7 @@ public class CourseLearningDocument extends AbstractDocument<CourseLearningViewO
 
             @Override
             public void onNetworkFail() {
+                Logger.d(LOG_TAG, "onNetworkFail");
                 CourseLearningViewOps view = getView();
                 if (view != null) {
                     view.onNetworkFail();
@@ -53,6 +56,7 @@ public class CourseLearningDocument extends AbstractDocument<CourseLearningViewO
 
             @Override
             public void onResponseFail(Response response) {
+                Logger.d(LOG_TAG, "onResponseFail");
                 CourseLearningViewOps view = getView();
                 if (view != null) {
                     view.onGetCourseFail();

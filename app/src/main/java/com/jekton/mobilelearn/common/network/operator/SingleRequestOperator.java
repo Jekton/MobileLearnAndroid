@@ -34,6 +34,7 @@ class SingleRequestOperator implements NetworkOperatorService {
     public void executeRequest(@NonNull Request request,
                                @NonNull OnResponseCallback callback) {
 
+        HttpRunnable oldRunnable = mRunnable;
         mRunnable = new HttpRunnable(request,
                                      new RequestCompletion(callback));
 
@@ -44,8 +45,8 @@ class SingleRequestOperator implements NetworkOperatorService {
                 throw new IllegalStateException("Couldn't execute request while it's shut down");
             }
             // cancel the previous request since we can just handle a single request at a time
-            if (mRunnable != null) {
-                mRunnable.cancel();
+            if (oldRunnable != null) {
+                oldRunnable.cancel();
             }
         }
         /**

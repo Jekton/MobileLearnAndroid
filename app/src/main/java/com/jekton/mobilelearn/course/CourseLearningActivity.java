@@ -2,25 +2,81 @@ package com.jekton.mobilelearn.course;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
+import com.jekton.mobilelearn.course.widget.LectureListAdapter;
+import com.jekton.mobilelearn.network.UrlConstants;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * @author Jekton
  */
 public class CourseLearningActivity
         extends DialogEnabledActivity<CourseLearningViewOps, CourseLearningDocumentOps>
-        implements CourseLearningViewOps {
+        implements CourseLearningViewOps, AdapterView.OnItemClickListener {
 
     private static final String INTENT_EXTRA_COURSE_ID = "INTENT_EXTRA_COURSE_ID";
 
+    private ImageView mIcon;
+    private TextView mCourseName;
+    private TextView mCourseDesc;
+    private LectureListAdapter mLectureListAdapter;
+
+    private String mCourseId;
     private Course mCourse;
 
 
-    private void fillCourseInfo() {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        super.onCreateDocument(this, CourseLearningDocument.class);
+        setContentView(R.layout.activity_course_learning);
 
+        initView();
+    }
+
+    private void initCourseId() {
+        Intent intent = getIntent();
+        mCourseId = intent.getStringExtra(INTENT_EXTRA_COURSE_ID);
+        if (mCourseId == null) {
+            throw new IllegalStateException("Intent used to start this activity must contains a key "
+                                                    + INTENT_EXTRA_COURSE_ID);
+        }
+    }
+
+    private void initView() {
+        initCourseId();
+
+        mIcon = (ImageView) findViewById(R.id.icon);
+        mCourseName = (TextView) findViewById(R.id.name);
+        mCourseDesc = (TextView) findViewById(R.id.desc);
+        ListView listView = (ListView) findViewById(R.id.lecture_list);
+        mLectureListAdapter = new LectureListAdapter(this);
+        listView.setAdapter(mLectureListAdapter);
+        listView.setOnItemClickListener(this);
+
+        showDialog();
+        getDocument().getCourseInfo(mCourseId);
+    }
+
+    private void fillCourseInfo() {
+        ImageLoader.getInstance().displayImage(UrlConstants.HOST + mCourse.iconPath,
+                                               mIcon);
+
+        Resources resources = getResources();
+        mCourseName.setText(resources.getString(R.string.temp_course_name, mCourse.name));
+        mCourseDesc.setText(resources.getString(R.string.temp_course_desc, mCourse.desc));
+        mLectureListAdapter.onCourseChange(mCourse);
     }
 
     @Override
@@ -29,6 +85,7 @@ public class CourseLearningActivity
             @Override
             public void run() {
                 mCourse = course;
+                closeDialog();
                 fillCourseInfo();
             }
         });
@@ -48,5 +105,10 @@ public class CourseLearningActivity
         Intent intent = new Intent(activity, CourseLearningActivity.class);
         intent.putExtra(INTENT_EXTRA_COURSE_ID, courseId);
         return intent;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // TODO: 2/24/2016 open VideoActivity
     }
 }
