@@ -6,7 +6,12 @@ import android.support.annotation.Nullable;
 import com.jekton.mobilelearn.common.util.Logger;
 import com.jekton.mobilelearn.course.Course;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,10 +34,9 @@ class FileUtil {
     public static synchronized @Nullable List<CourseFile> makeFileList(Course course) {
         List<CourseFile> courseFiles = new ArrayList<>();
 
-        File appRoot = Environment.getExternalStorageDirectory();
-        File courseDir = new File(appRoot.getAbsolutePath() + "/" + course.name);
+        File courseDir = getCourseDir(course);
         if (!courseDir.exists()) {
-            if (!courseDir.mkdir()) {
+            if (!courseDir.mkdirs()) {
                 Logger.e(LOG_TAG, "Fail to create directory: " + courseDir.getAbsolutePath());
                 return null;
             }
@@ -58,6 +62,36 @@ class FileUtil {
 
     private static String getStoredFileName(String path) {
         return path.substring(path.lastIndexOf('/') + 1);
+    }
+
+
+    public static void writeToPath(InputStream in, String writeTo) throws IOException {
+        OutputStream out = null;
+        try {
+            out = new BufferedOutputStream(new FileOutputStream(writeTo));
+
+            byte[] buffer = new byte[4096];
+            int len;
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer, 0, len);
+            }
+        } finally {
+            if (out != null) {
+                out.flush();
+                out.close();
+            }
+        }
+    }
+
+    public static File getCourseDir(Course course) {
+        File appRoot = Environment.getExternalStorageDirectory();
+        return new File(appRoot.getAbsolutePath()
+                                + "/com.jekton.MobileLearn/file/"
+                                + course.name.replace(" ", "_"));
+    }
+
+    public static String makeLocalPath(Course course, CourseFile file) {
+        return getCourseDir(course).getAbsolutePath() + "/" + getStoredFileName(file.path);
     }
 
     private FileUtil() {

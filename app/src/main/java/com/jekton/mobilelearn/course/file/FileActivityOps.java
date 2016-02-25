@@ -2,12 +2,14 @@ package com.jekton.mobilelearn.course.file;
 
 import android.support.annotation.NonNull;
 
+import com.jekton.mobilelearn.common.dv.ContextView;
+
 import java.util.List;
 
 /**
  * @author Jekton
  */
-interface FileActivityOps {
+interface FileActivityOps extends ContextView {
 
     void onFilesChange(@NonNull List<CourseFile> courseFiles);
 

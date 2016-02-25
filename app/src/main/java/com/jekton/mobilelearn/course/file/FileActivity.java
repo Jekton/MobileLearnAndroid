@@ -1,6 +1,7 @@
 package com.jekton.mobilelearn.course.file;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -95,6 +96,12 @@ public class FileActivity
     public void onLocalFileSystemError() {
         showToastAndDismissDialog(R.string.err_filesystem_error);
     }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
 
     @Override
     public void onButtonClicked(int position) {

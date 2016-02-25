@@ -1,5 +1,7 @@
 package com.jekton.mobilelearn.course.file;
 
+import android.content.Intent;
+
 import com.google.gson.Gson;
 import com.jekton.mobilelearn.common.dv.AbstractDocument;
 import com.jekton.mobilelearn.common.network.HttpUtils;
@@ -12,6 +14,7 @@ import com.jekton.mobilelearn.network.UrlConstants;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -25,12 +28,20 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     private static final String LOG_TAG = FileActivityDocument.class.getSimpleName();
 
     private NetworkOperator mNetworkOperator = NetworkOperators.getSingleRequestOperator();
-    private volatile String mCourseId;
-    private volatile List<CourseFile> mCourseFiles;
+    private AtomicReference<String> mCourseId;
+    private AtomicReference<Course> mCourse;
+    private AtomicReference<List<CourseFile>> mCourseFiles;
 
+
+    public FileActivityDocument() {
+        mCourseId = new AtomicReference<>();
+        mCourse = new AtomicReference<>();
+        mCourseFiles = new AtomicReference<>();
+    }
 
     @Override
     public void initFileList(String courseId) {
+        mCourseId.set(courseId);
         String url = String.format(UrlConstants.GET_TAKEN_COURSE_TEMPLATE, courseId);
         Request request = HttpUtils.makeGetRequest(url);
         mNetworkOperator.executeRequest(request, new OnResponseCallback() {
@@ -41,15 +52,18 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
                     try {
                         Gson gson = new Gson();
                         Course course = gson.fromJson(response.body().string(), Course.class);
+                        mCourse.set(course);
+
                         List<CourseFile> courseFiles = FileUtil.makeFileList(course);
                         if (courseFiles == null) {
                             view.onLocalFileSystemError();
                         } else {
                             setDownloadingOrNot(courseFiles);
-                            mCourseFiles = courseFiles;
+                            mCourseFiles.set(courseFiles);
                             view.onFilesChange(courseFiles);
                         }
                     } catch (IOException e) {
+                        onResponseFail(response);
                         Logger.e(LOG_TAG, e);
                     }
                 }
@@ -94,7 +108,14 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     }
 
     private void downFile(CourseFile file) {
-        // TODO: 2/25/2016
+        FileActivityOps view = getView();
+        if (view != null) {
+            Intent downFileIntent = FileDownloadService.makeDownIntent(
+                    UrlConstants.HOST + file.path,
+                    FileUtil.makeLocalPath(mCourse.get(), file)
+            );
+            view.getContext().startService(downFileIntent);
+        }
     }
 
     private void openFile(CourseFile file) {

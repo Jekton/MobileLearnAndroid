@@ -1,6 +1,5 @@
 package com.jekton.mobilelearn.common.dv;
 
-import android.app.Activity;
 import android.content.Context;
 
 /**
@@ -8,7 +7,7 @@ import android.content.Context;
  */
 public interface ContextView {
 
-    Activity getActivity();
+    Context getContext();
 
     Context getApplicationContext();
 }
