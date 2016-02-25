@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".MyApplication"
@@ -30,6 +31,8 @@
         <activity android:name=".course.CourseDetailsActivity" />
 
         <activity android:name=".course.CourseLearningActivity" />
+
+        <activity android:name=".course.VideoActivity" />
 
     </application>
 

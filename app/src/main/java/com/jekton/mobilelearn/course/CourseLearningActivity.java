@@ -117,6 +117,7 @@ public class CourseLearningActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // TODO: 2/24/2016 open VideoActivity
+        String url = UrlConstants.HOST + mCourse.lectures[position].path;
+        startActivity(VideoActivity.makeIntent(this, url));
     }
 }
