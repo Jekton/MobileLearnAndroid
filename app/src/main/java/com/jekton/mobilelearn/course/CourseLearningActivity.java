@@ -109,7 +109,7 @@ public class CourseLearningActivity
         int id = item.getItemId();
 
         if (id == R.id.view_files) {
-            // TODO: 2/25/2016
+
             return true;
         }
 

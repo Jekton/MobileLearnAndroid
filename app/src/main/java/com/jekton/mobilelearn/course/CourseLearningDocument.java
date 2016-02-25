@@ -17,7 +17,7 @@ import okhttp3.Response;
 /**
  * @author Jekton
  */
-public class CourseLearningDocument extends AbstractDocument<CourseLearningViewOps>
+class CourseLearningDocument extends AbstractDocument<CourseLearningViewOps>
         implements CourseLearningDocumentOps {
 
     private static final String LOG_TAG = CourseLearningDocument.class.getSimpleName();

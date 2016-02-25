@@ -33,6 +33,9 @@
         <activity
             android:name=".course.CourseLearningActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".course.courseFile.FileActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name=".course.VideoActivity" />
 
