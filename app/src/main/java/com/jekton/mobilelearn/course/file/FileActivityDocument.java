@@ -11,6 +11,7 @@ import com.jekton.mobilelearn.course.Course;
 import com.jekton.mobilelearn.network.UrlConstants;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -25,7 +26,7 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
 
     private NetworkOperator mNetworkOperator = NetworkOperators.getSingleRequestOperator();
     private volatile String mCourseId;
-
+    private volatile List<CourseFile> mCourseFiles;
 
 
     @Override
@@ -40,7 +41,14 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
                     try {
                         Gson gson = new Gson();
                         Course course = gson.fromJson(response.body().string(), Course.class);
-                        view.onFilesChange(FileUtil.makeFileList(course));
+                        List<CourseFile> courseFiles = FileUtil.makeFileList(course);
+                        if (courseFiles == null) {
+                            view.onLocalFileSystemError();
+                        } else {
+                            setDownloadingOrNot(courseFiles);
+                            mCourseFiles = courseFiles;
+                            view.onFilesChange(courseFiles);
+                        }
                     } catch (IOException e) {
                         Logger.e(LOG_TAG, e);
                     }
@@ -64,6 +72,10 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
             }
         });
 
+    }
+
+    private void setDownloadingOrNot(List<CourseFile> courseFiles) {
+        // TODO: 2/25/2016
     }
 
     @Override

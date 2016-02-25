@@ -15,4 +15,6 @@ interface FileActivityOps {
 
     void onNetworkError();
 
+    void onLocalFileSystemError();
+
 }

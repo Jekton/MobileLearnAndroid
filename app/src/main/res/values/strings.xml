@@ -2,7 +2,8 @@
     <string name="app_name">MobileLearn</string>
 
     <!-- Common error message -->
-    <string name="err_network_error">Network error</string>
+    <string name="err_network_error">Network Error</string>
+    <string name="err_filesystem_error">Filesystem Error</string>
 
     <string name="email">email</string>
     <string name="name">name</string>

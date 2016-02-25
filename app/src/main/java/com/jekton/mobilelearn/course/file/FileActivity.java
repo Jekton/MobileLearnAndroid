@@ -63,6 +63,7 @@ public class FileActivity
     @Override
     protected void onResume() {
         super.onResume();
+        showDialog();
         getDocument().initFileList(mCourseId);
     }
 
@@ -84,9 +85,15 @@ public class FileActivity
     public void onGetFileListFail() {
         showToastAndDismissDialog(R.string.msg_fail_get_file_list);
     }
+
     @Override
     public void onNetworkError() {
         showToastAndDismissDialog(R.string.err_network_error);
+    }
+
+    @Override
+    public void onLocalFileSystemError() {
+        showToastAndDismissDialog(R.string.err_filesystem_error);
     }
 
     @Override

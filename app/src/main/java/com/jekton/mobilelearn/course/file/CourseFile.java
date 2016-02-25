@@ -17,9 +17,15 @@ public class CourseFile {
     public static final int STATE_DOWNLOADING = 1;
     public static final int STATE_DOWNLOADED = 2;
 
-    public @FileState int state;
+    public CourseFile(String filename, String path, @FileState int state) {
+        this.filename = filename;
+        this.path = path;
+        this.state = state;
+    }
+
     public String filename;
     public String path;
+    public @FileState int state;
 
 
     public @StringRes int getStateStringRes() {
