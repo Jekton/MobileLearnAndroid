@@ -80,6 +80,24 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
 
     @Override
     public void performActionFor(CourseFile courseFile) {
+        switch (courseFile.state) {
+            case CourseFile.STATE_NOT_DOWNLOAD:
+                downFile(courseFile);
+            case CourseFile.STATE_DOWNLOADING:
+                // no-op
+            case CourseFile.STATE_DOWNLOADED:
+                openFile(courseFile);
+            default:
+                // should not happen
+                // no-op
+        }
+    }
 
+    private void downFile(CourseFile file) {
+        // TODO: 2/25/2016
+    }
+
+    private void openFile(CourseFile file) {
+        // TODO: 2/25/2016
     }
 }
