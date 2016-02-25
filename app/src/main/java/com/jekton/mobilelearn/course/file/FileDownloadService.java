@@ -14,9 +14,11 @@ import com.jekton.mobilelearn.common.network.operator.OnResponseCallback;
 import com.jekton.mobilelearn.common.util.Logger;
 import com.jekton.mobilelearn.network.UrlConstants;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.Response;
 
@@ -35,6 +37,8 @@ public class FileDownloadService extends Service {
     private final Object mLock = new Object();
     private Set<String> mDownloadingSet = new HashSet<>();
     private NetworkOperatorService mNetworkOperator = NetworkOperators.newMultiRequestOperator();
+
+    private final AtomicReference<DownloadObserver> mObserver = new AtomicReference<>();
 
 
     @Override
@@ -107,6 +111,11 @@ public class FileDownloadService extends Service {
     }
 
 
+    public void observeDownloadState(DownloadObserver observer) {
+        mObserver.set(observer);
+    }
+
+
     private class DownLoadResponseCallback implements OnResponseCallback {
 
         private final String mRemotePath;
@@ -128,28 +137,44 @@ public class FileDownloadService extends Service {
                     }
                 }
 
-                // TODO: 2/25/2016
+                notifyObserver(100);
             } catch (IOException e) {
-                // TODO: 2/25/2016
-                Logger.e(LOG_TAG, e);
+                Logger.d(LOG_TAG, e);
+
+                notifyObserver(-1);
+                File file = new File(mStoreTo);
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+        }
+
+        private void notifyObserver(int percentage) {
+            DownloadObserver observer = mObserver.get();
+            if (observer != null) {
+                observer.onStateChange(mRemotePath, percentage);
             }
         }
 
         @Override
         public void onNetworkFail() {
-            // TODO: 2/25/2016
+            notifyObserver(-1);
         }
 
         @Override
         public void onResponseFail(Response response) {
-            // TODO: 2/25/2016
+            notifyObserver(-1);
         }
     }
 
 
-    public interface DownloadResolver {
+    public interface DownloadObserver {
 
-        void onStateChange(String path, float percentage);
+        /**
+         * @param path remote path of the downloading file
+         * @param percentage downloading progress, -1 if download fail
+         */
+        void onStateChange(String path, int percentage);
 
     }
 }
