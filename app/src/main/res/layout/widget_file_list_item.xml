@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/activity_file_item_padding"
+    android:paddingBottom="@dimen/activity_file_item_padding">
+
+    <TextView
+        android:id="@+id/filename"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        tools:text="some file name"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="download"/>
+
+</LinearLayout>

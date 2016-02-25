@@ -39,4 +39,9 @@
 
 
     <string name="menu_view_files">View Files</string>
+
+    <string name="file_state_not_download">Download</string>
+    <string name="file_state_downloading">Downloading</string>
+    <string name="file_state_downloaded">Downloaded</string>
+
 </resources>
