@@ -112,7 +112,7 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
         if (view != null) {
             Intent downFileIntent = FileDownloadService.makeDownloadIntent(
                     view.getContext(),
-                    UrlConstants.HOST + file.path,
+                    file.path,
                     FileUtil.makeLocalPath(mCourse.get(), file)
             );
             view.getContext().startService(downFileIntent);

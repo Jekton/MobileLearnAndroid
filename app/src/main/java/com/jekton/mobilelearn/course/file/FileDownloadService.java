@@ -12,9 +12,9 @@ import com.jekton.mobilelearn.common.network.operator.NetworkOperatorService;
 import com.jekton.mobilelearn.common.network.operator.NetworkOperators;
 import com.jekton.mobilelearn.common.network.operator.OnResponseCallback;
 import com.jekton.mobilelearn.common.util.Logger;
+import com.jekton.mobilelearn.network.UrlConstants;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,18 +27,15 @@ public class FileDownloadService extends Service {
 
     private static final String LOG_TAG = FileDownloadService.class.getSimpleName();
 
-    private static final String INTENT_KEY_DOWNLOAD_FROM = "INTENT_KEY_DOWNLOAD_FROM";
+    private static final String INTENT_KEY_REMOTE_PATH = "INTENT_KEY_REMOTE_PATH";
     private static final String INTENT_KEY_STORE_TO = "INTENT_KEY_STORE_TO";
 
     private IBinder mBinder = new DownloadServiceBinder();
-    private NetworkOperatorService mNetworkOperator;
-    private Set<String> mDownloadingSet;
 
-    @Override
-    public void onCreate() {
-        mNetworkOperator = NetworkOperators.newMultiRequestOperator();
-        mDownloadingSet = Collections.synchronizedSet(new HashSet<String>());
-    }
+    private final Object mLock = new Object();
+    private Set<String> mDownloadingSet = new HashSet<>();
+    private NetworkOperatorService mNetworkOperator = NetworkOperators.newMultiRequestOperator();
+
 
     @Override
     public void onDestroy() {
@@ -48,26 +45,32 @@ public class FileDownloadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String downloadFrom = intent.getStringExtra(INTENT_KEY_DOWNLOAD_FROM);
-        if (downloadFrom == null) {
-            return Service.START_REDELIVER_INTENT;
+        String remotePath = intent.getStringExtra(INTENT_KEY_REMOTE_PATH);
+        if (remotePath == null) {
+            return Service.START_STICKY;
         }
         String storeTo = intent.getStringExtra(INTENT_KEY_STORE_TO);
         if (storeTo == null) {
-            return Service.START_REDELIVER_INTENT;
+            return Service.START_STICKY;
         }
-        Logger.d(LOG_TAG, "downloadFrom: " + downloadFrom);
+        Logger.d(LOG_TAG, "remotePath: " + remotePath);
         Logger.d(LOG_TAG, "storeTo: " + storeTo);
 
-        if (!mDownloadingSet.contains(downloadFrom)) {
-            mDownloadingSet.add(downloadFrom);
+        boolean needToExecuted = false;
+        synchronized (mLock) {
+            if (!mDownloadingSet.contains(remotePath)) {
+                mDownloadingSet.add(remotePath);
+                needToExecuted = true;
+            }
+        }
+        if (needToExecuted) {
             mNetworkOperator.executeRequest(
-                    HttpUtils.makeGetRequest(downloadFrom),
-                    new DownLoadResponseCallback(downloadFrom, storeTo));
+                    HttpUtils.makeGetRequest(UrlConstants.HOST + remotePath),
+                    new DownLoadResponseCallback(remotePath, storeTo));
+            return Service.START_REDELIVER_INTENT;
         }
 
-
-        return Service.START_REDELIVER_INTENT;
+        return Service.START_STICKY;
     }
 
 
@@ -88,22 +91,29 @@ public class FileDownloadService extends Service {
         return new Intent(context, FileDownloadService.class);
     }
 
-    public static Intent makeDownloadIntent(Context context, String downloadFrom, String storeTo) {
+    public static Intent makeDownloadIntent(Context context, String remotePath, String storeTo) {
         Intent intent = new Intent(context, FileDownloadService.class);
-        intent.putExtra(INTENT_KEY_DOWNLOAD_FROM, downloadFrom);
+        intent.putExtra(INTENT_KEY_REMOTE_PATH, remotePath);
         intent.putExtra(INTENT_KEY_STORE_TO, storeTo);
 
         return intent;
     }
 
 
+    public Set<String> getDownloadingSet() {
+        synchronized (mLock) {
+            return new HashSet<>(mDownloadingSet);
+        }
+    }
+
+
     private class DownLoadResponseCallback implements OnResponseCallback {
 
-        private final String mDownloadFrom;
+        private final String mRemotePath;
         private final String mStoreTo;
 
-        public DownLoadResponseCallback(String downloadFrom, String storeTo) {
-            mDownloadFrom = downloadFrom;
+        public DownLoadResponseCallback(String remotePath, String storeTo) {
+            mRemotePath = remotePath;
             mStoreTo = storeTo;
         }
 
@@ -111,10 +121,13 @@ public class FileDownloadService extends Service {
         public void onResponseSuccess(Response response) {
             try {
                 FileUtil.writeToPath(response.body().byteStream(), mStoreTo);
-                mDownloadingSet.remove(mDownloadFrom);
-                if (mDownloadingSet.size() == 0) {
-                    stopSelf();
+                synchronized (mLock) {
+                    mDownloadingSet.remove(mRemotePath);
+                    if (mDownloadingSet.size() == 0) {
+                        stopSelf();
+                    }
                 }
+
                 // TODO: 2/25/2016
             } catch (IOException e) {
                 // TODO: 2/25/2016
@@ -131,5 +144,12 @@ public class FileDownloadService extends Service {
         public void onResponseFail(Response response) {
             // TODO: 2/25/2016
         }
+    }
+
+
+    public interface DownloadResolver {
+
+        void onStateChange(String path, float percentage);
+
     }
 }
