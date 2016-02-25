@@ -5,7 +5,8 @@ import com.jekton.mobilelearn.common.dv.BasicDocumentOps;
 /**
  * @author Jekton
  */
-interface FileActivityDocumentOps extends BasicDocumentOps<FileActivityOps> {
+interface FileActivityDocumentOps
+        extends BasicDocumentOps<FileActivityOps>, FileDownloadService.DownloadObserver {
 
     void initFileList(String courseId);
 
@@ -14,4 +15,6 @@ interface FileActivityDocumentOps extends BasicDocumentOps<FileActivityOps> {
      * @param courseFile CourseFile that user clicked
      */
     void performActionFor(CourseFile courseFile);
+
+    void setDownloadingSetAvailable(boolean available);
 }

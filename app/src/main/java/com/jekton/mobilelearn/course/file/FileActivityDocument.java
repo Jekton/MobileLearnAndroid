@@ -14,6 +14,7 @@ import com.jekton.mobilelearn.network.UrlConstants;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.Request;
@@ -31,6 +32,7 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     private AtomicReference<String> mCourseId;
     private AtomicReference<Course> mCourse;
     private AtomicReference<List<CourseFile>> mCourseFiles;
+    private volatile boolean mHasDownloadingSet;
 
 
     public FileActivityDocument() {
@@ -88,12 +90,56 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
 
     }
 
+    @Override
+    public void onStateChange(String path, int percent) {
+        List<CourseFile> courseFiles = mCourseFiles.get();
+        for (CourseFile file : courseFiles) {
+            if (file.path.equals(path)) {
+                if (percent == 100) {
+                    file.state = CourseFile.STATE_DOWNLOADED;
+                } else if (percent == -1) {
+                    file.state = CourseFile.STATE_NOT_DOWNLOAD;
+                } else {
+                    file.state = CourseFile.STATE_DOWNLOADING;
+                }
+
+                notifyFileListChanged();
+                return;
+            }
+        }
+    }
+
+    private void notifyFileListChanged() {
+        FileActivityOps view = getView();
+        if (view != null) {
+            view.onFilesChange(mCourseFiles.get());
+        }
+    }
+
+    @Override
+    public void setDownloadingSetAvailable(boolean available) {
+        mHasDownloadingSet = available;
+    }
+
     private void setDownloadingOrNot(List<CourseFile> courseFiles) {
-        // TODO: 2/25/2016
+        if (!mHasDownloadingSet) {
+            return;
+        }
+
+        FileActivityOps view = getView();
+        if (view != null) {
+            Set<String> downloading = view.getDownloadingSet();
+            for (CourseFile file : courseFiles) {
+                if (downloading.contains(file.path)) {
+                    file.state = CourseFile.STATE_DOWNLOADING;
+                }
+            }
+        }
     }
 
     @Override
     public void performActionFor(CourseFile courseFile) {
+        Logger.d(LOG_TAG, "file state: " + courseFile.state);
         switch (courseFile.state) {
             case CourseFile.STATE_NOT_DOWNLOAD:
                 downFile(courseFile);
@@ -116,6 +162,8 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
                     FileUtil.makeLocalPath(mCourse.get(), file)
             );
             view.getContext().startService(downFileIntent);
+            file.state = CourseFile.STATE_DOWNLOADING;
+            notifyFileListChanged();
         }
     }
 

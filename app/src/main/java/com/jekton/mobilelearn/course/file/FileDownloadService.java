@@ -68,6 +68,7 @@ public class FileDownloadService extends Service {
             }
         }
         if (needToExecuted) {
+            Logger.d(LOG_TAG, "start to download");
             mNetworkOperator.executeRequest(
                     HttpUtils.makeGetRequest(UrlConstants.HOST + remotePath),
                     new DownLoadResponseCallback(remotePath, storeTo));
@@ -111,9 +112,16 @@ public class FileDownloadService extends Service {
     }
 
 
-    public void observeDownloadState(DownloadObserver observer) {
+    public void registerDownloadObserver(DownloadObserver observer) {
         mObserver.set(observer);
+        // TODO: 2/25/2016  push progress of all downloading file
     }
+
+    public void unregisterDownloadObserver() {
+        mObserver.set(null);
+    }
+
+
 
 
     private class DownLoadResponseCallback implements OnResponseCallback {
@@ -130,6 +138,7 @@ public class FileDownloadService extends Service {
         public void onResponseSuccess(Response response) {
             try {
                 FileUtil.writeToPath(response.body().byteStream(), mStoreTo);
+                Logger.d(LOG_TAG, "downloaded");
                 synchronized (mLock) {
                     mDownloadingSet.remove(mRemotePath);
                     if (mDownloadingSet.size() == 0) {
@@ -146,13 +155,15 @@ public class FileDownloadService extends Service {
                 if (file.exists()) {
                     file.delete();
                 }
+            } finally {
+                response.body().close();
             }
         }
 
-        private void notifyObserver(int percentage) {
+        private void notifyObserver(int percent) {
             DownloadObserver observer = mObserver.get();
             if (observer != null) {
-                observer.onStateChange(mRemotePath, percentage);
+                observer.onStateChange(mRemotePath, percent);
             }
         }
 
@@ -172,9 +183,9 @@ public class FileDownloadService extends Service {
 
         /**
          * @param path remote path of the downloading file
-         * @param percentage downloading progress, -1 if download fail
+         * @param percent downloading progress, -1 if download fail
          */
-        void onStateChange(String path, int percentage);
+        void onStateChange(String path, int percent);
 
     }
 }

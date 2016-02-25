@@ -29,13 +29,13 @@ class HttpRunnable implements Runnable {
 
     @Override
     public void run() {
+        Logger.d(LOG_TAG, "run() canceled = " + mCanceled);
         if (mCanceled) return;
         mCall = HttpClient.getInstance().newCall(mRequest);
 
         try {
             Response response = mCall.execute();
             if (mCanceled) return;
-
             if (response.isSuccessful()) {
                 mCallback.onResponseSuccess(response);
             } else {

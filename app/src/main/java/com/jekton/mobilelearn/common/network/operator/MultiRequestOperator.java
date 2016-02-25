@@ -19,6 +19,8 @@ import okhttp3.Request;
  */
 class MultiRequestOperator implements NetworkOperatorService {
 
+    private static final String LOG_TAG = MultiRequestOperator.class.getSimpleName();
+
     private final ExecutorService mExecutor;
     private final Map<Object, HttpRunnable> mRunnableHashMap;
     private final Random mRandom;
@@ -54,8 +56,7 @@ class MultiRequestOperator implements NetworkOperatorService {
     private void execute(@Nullable Object key,
                          @NonNull Request request,
                          @NonNull OnResponseCallback callback) {
-        RequestCompletion wrapper = new RequestCompletion(key, callback);
-        HttpRunnable runnable = new HttpRunnable(request, wrapper);
+        HttpRunnable runnable;
 
         synchronized (mLock) {
             if (mShutdown) throw new IllegalStateException("The operator has been shut down");
@@ -64,6 +65,8 @@ class MultiRequestOperator implements NetworkOperatorService {
             } else {
                 key = generateUnusedKey();
             }
+            RequestCompletion wrapper = new RequestCompletion(key, callback);
+            runnable = new HttpRunnable(request, wrapper);
             mRunnableHashMap.put(key, runnable);
         }
         // Since the executor might have limited resources, the execute() method might be blocked,

@@ -19,13 +19,15 @@ import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
 import com.jekton.mobilelearn.course.file.FileDownloadService.DownloadServiceBinder;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Jekton
  */
 public class FileActivity
         extends DialogEnabledActivity<FileActivityOps, FileActivityDocumentOps>
-        implements FileActivityOps, FileListAdapter.OnButtonClicked, ListView.OnItemClickListener {
+        implements FileActivityOps, FileListAdapter.OnButtonClicked, ListView.OnItemClickListener,
+        FileDownloadService.DownloadObserver {
 
     private static final String INTENT_EXTRA_COURSE_ID = "INTENT_EXTRA_COURSE_ID";
 
@@ -43,6 +45,8 @@ public class FileActivity
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             DownloadServiceBinder binder = (DownloadServiceBinder) service;
             mService = binder.getService();
+            mService.registerDownloadObserver(FileActivity.this);
+            getDocument().setDownloadingSetAvailable(true);
             mBound = true;
         }
 
@@ -105,6 +109,8 @@ public class FileActivity
         super.onStop();
         // Unbind from the service
         if (mBound) {
+            mService.unregisterDownloadObserver();
+            getDocument().setDownloadingSetAvailable(false);
             unbindService(mConnection);
             mBound = false;
         }
@@ -139,6 +145,11 @@ public class FileActivity
     }
 
     @Override
+    public Set<String> getDownloadingSet() {
+        return mService.getDownloadingSet();
+    }
+
+    @Override
     public Context getContext() {
         return this;
     }
@@ -154,6 +165,11 @@ public class FileActivity
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // TODO: 2/25/2016 ask for download
         onButtonClicked(position);
+    }
+
+    @Override
+    public void onStateChange(String path, int percent) {
+        getDocument().onStateChange(path, percent);
     }
 
     public static Intent makeIntent(Activity activity, String courseId) {
