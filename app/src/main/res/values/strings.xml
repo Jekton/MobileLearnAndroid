@@ -13,7 +13,6 @@
     <string name="lectures">Lectures: </string>
     <string name="no_lecture">No Lecture</string>
 
-
     <string name="msg_success_register">Register success</string>
     <string name="msg_fail_register">Register fail</string>
 
@@ -37,4 +36,7 @@
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+
+    <string name="menu_view_files">View Files</string>
 </resources>

@@ -20,7 +20,7 @@
 
         <activity
             android:name=".course.MainActivity"
-            android:theme="@style/MainActivityTheme">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -30,7 +30,9 @@
 
         <activity android:name=".course.CourseDetailsActivity" />
 
-        <activity android:name=".course.CourseLearningActivity" />
+        <activity
+            android:name=".course.CourseLearningActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name=".course.VideoActivity" />
 

@@ -6,6 +6,10 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -56,6 +60,7 @@ public class CourseLearningActivity
     }
 
     private void initView() {
+        initActionBar();
         initCourseId();
 
         mIcon = (ImageView) findViewById(R.id.icon);
@@ -71,6 +76,11 @@ public class CourseLearningActivity
         getDocument().getCourseInfo(mCourseId);
     }
 
+       private void initActionBar() {
+           Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+           setSupportActionBar(toolbar);
+       }
+
     private void fillCourseInfo() {
         ImageLoader.getInstance().displayImage(UrlConstants.HOST + mCourse.iconPath,
                                                mIcon);
@@ -85,6 +95,25 @@ public class CourseLearningActivity
         } else {
             mLectureListTitle.setText(R.string.lectures);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_course_learning, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.view_files) {
+            // TODO: 2/25/2016
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
