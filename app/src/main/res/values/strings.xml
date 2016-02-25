@@ -10,6 +10,8 @@
     <string name="register">register</string>
     <string name="login">login</string>
 
+    <string name="lectures">Lectures: </string>
+    <string name="no_lecture">No Lecture</string>
 
 
     <string name="msg_success_register">Register success</string>

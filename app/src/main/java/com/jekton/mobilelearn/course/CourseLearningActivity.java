@@ -30,6 +30,7 @@ public class CourseLearningActivity
     private ImageView mIcon;
     private TextView mCourseName;
     private TextView mCourseDesc;
+    private TextView mLectureListTitle;
     private LectureListAdapter mLectureListAdapter;
 
     private String mCourseId;
@@ -60,6 +61,7 @@ public class CourseLearningActivity
         mIcon = (ImageView) findViewById(R.id.icon);
         mCourseName = (TextView) findViewById(R.id.name);
         mCourseDesc = (TextView) findViewById(R.id.desc);
+        mLectureListTitle = (TextView) findViewById(R.id.lecture_list_title);
         ListView listView = (ListView) findViewById(R.id.lecture_list);
         mLectureListAdapter = new LectureListAdapter(this);
         listView.setAdapter(mLectureListAdapter);
@@ -77,6 +79,12 @@ public class CourseLearningActivity
         mCourseName.setText(resources.getString(R.string.temp_course_name, mCourse.name));
         mCourseDesc.setText(resources.getString(R.string.temp_course_desc, mCourse.desc));
         mLectureListAdapter.onCourseChange(mCourse);
+
+        if (mCourse.lectureNum == 0) {
+            mLectureListTitle.setText(R.string.no_lecture);
+        } else {
+            mLectureListTitle.setText(R.string.lectures);
+        }
     }
 
     @Override

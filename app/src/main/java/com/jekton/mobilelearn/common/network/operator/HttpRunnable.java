@@ -29,7 +29,6 @@ class HttpRunnable implements Runnable {
 
     @Override
     public void run() {
-        Logger.d(LOG_TAG, "run() mCanceled = " + mCanceled);
         if (mCanceled) return;
         mCall = HttpClient.getInstance().newCall(mRequest);
 
