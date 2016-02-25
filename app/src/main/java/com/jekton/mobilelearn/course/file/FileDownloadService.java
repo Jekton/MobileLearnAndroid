@@ -1,7 +1,9 @@
 package com.jekton.mobilelearn.course.file;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -24,36 +26,35 @@ import okhttp3.Response;
 public class FileDownloadService extends Service {
 
     private static final String LOG_TAG = FileDownloadService.class.getSimpleName();
-    private static final String INTENT_ACTION = "com.jekton.mobilelearn.FileDownloadService";
 
     private static final String INTENT_KEY_DOWNLOAD_FROM = "INTENT_KEY_DOWNLOAD_FROM";
     private static final String INTENT_KEY_STORE_TO = "INTENT_KEY_STORE_TO";
 
+    private IBinder mBinder = new DownloadServiceBinder();
     private NetworkOperatorService mNetworkOperator;
     private Set<String> mDownloadingSet;
 
     @Override
     public void onCreate() {
-        super.onCreate();
         mNetworkOperator = NetworkOperators.newMultiRequestOperator();
         mDownloadingSet = Collections.synchronizedSet(new HashSet<String>());
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         mNetworkOperator.shutdown();
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String downloadFrom = intent.getStringExtra(INTENT_KEY_DOWNLOAD_FROM);
         if (downloadFrom == null) {
-            return Service.START_STICKY;
+            return Service.START_REDELIVER_INTENT;
         }
         String storeTo = intent.getStringExtra(INTENT_KEY_STORE_TO);
         if (storeTo == null) {
-            return Service.START_STICKY;
+            return Service.START_REDELIVER_INTENT;
         }
         Logger.d(LOG_TAG, "downloadFrom: " + downloadFrom);
         Logger.d(LOG_TAG, "storeTo: " + storeTo);
@@ -66,18 +67,29 @@ public class FileDownloadService extends Service {
         }
 
 
-        return Service.START_STICKY;
+        return Service.START_REDELIVER_INTENT;
+    }
+
+
+    public class DownloadServiceBinder extends Binder {
+        public FileDownloadService getService() {
+            return FileDownloadService.this;
+        }
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
     }
 
 
-    public static Intent makeDownIntent(String downloadFrom, String storeTo) {
-        Intent intent = new Intent(INTENT_ACTION);
+    public static Intent makeIntent(Context context) {
+        return new Intent(context, FileDownloadService.class);
+    }
+
+    public static Intent makeDownloadIntent(Context context, String downloadFrom, String storeTo) {
+        Intent intent = new Intent(context, FileDownloadService.class);
         intent.putExtra(INTENT_KEY_DOWNLOAD_FROM, downloadFrom);
         intent.putExtra(INTENT_KEY_STORE_TO, storeTo);
 

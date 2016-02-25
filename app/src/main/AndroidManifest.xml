@@ -2,14 +2,10 @@
 <manifest package="com.jekton.mobilelearn"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <permission android:name="com.jekton.mobilelearn.FileDownload" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-
-    <uses-permission android:name="com.jekton.mobilelearn.FileDownload" />
 
     <application
         android:name=".MyApplication"
@@ -45,15 +41,7 @@
         <activity android:name=".course.VideoActivity" />
 
 
-        <service
-            android:name=".course.file.FileDownloadService"
-            android:permission="com.jekton.mobilelearn.FileDownload">
-            <intent-filter>
-                <action android:name="com.jekton.mobilelearn.FileDownloadService"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </service>
+        <service android:name=".course.file.FileDownloadService" />
 
     </application>
 

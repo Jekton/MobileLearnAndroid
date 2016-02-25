@@ -110,7 +110,8 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     private void downFile(CourseFile file) {
         FileActivityOps view = getView();
         if (view != null) {
-            Intent downFileIntent = FileDownloadService.makeDownIntent(
+            Intent downFileIntent = FileDownloadService.makeDownloadIntent(
+                    view.getContext(),
                     UrlConstants.HOST + file.path,
                     FileUtil.makeLocalPath(mCourse.get(), file)
             );

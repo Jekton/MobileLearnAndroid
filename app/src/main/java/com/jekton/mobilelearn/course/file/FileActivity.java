@@ -1,9 +1,12 @@
 package com.jekton.mobilelearn.course.file;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +16,7 @@ import android.widget.ListView;
 
 import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
+import com.jekton.mobilelearn.course.file.FileDownloadService.DownloadServiceBinder;
 
 import java.util.List;
 
@@ -28,6 +32,26 @@ public class FileActivity
     private String mCourseId;
     private List<CourseFile> mCourseFiles;
     private FileListAdapter mListAdapter;
+
+    private boolean mBound;
+    private FileDownloadService mService;
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            DownloadServiceBinder binder = (DownloadServiceBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mService = null;
+            mBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +85,14 @@ public class FileActivity
         }
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = FileDownloadService.makeIntent(this);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -68,6 +100,15 @@ public class FileActivity
         getDocument().initFileList(mCourseId);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Unbind from the service
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
 
     @Override
     public void onFilesChange(@NonNull final List<CourseFile> courseFiles) {
