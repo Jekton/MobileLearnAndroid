@@ -7,7 +7,7 @@ import com.jekton.mobilelearn.common.dv.BasicDocumentOps;
  */
 interface FileActivityDocumentOps extends BasicDocumentOps<FileActivityOps> {
 
-    void initFileList();
+    void initFileList(String courseId);
 
     /**
      * Perform action according to the state of the file

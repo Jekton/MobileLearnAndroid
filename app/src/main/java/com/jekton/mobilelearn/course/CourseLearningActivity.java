@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
+import com.jekton.mobilelearn.course.file.FileActivity;
 import com.jekton.mobilelearn.course.widget.LectureListAdapter;
 import com.jekton.mobilelearn.network.UrlConstants;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -109,7 +110,7 @@ public class CourseLearningActivity
         int id = item.getItemId();
 
         if (id == R.id.view_files) {
-
+            startActivity(FileActivity.makeIntent(this, mCourseId));
             return true;
         }
 

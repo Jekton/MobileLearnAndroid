@@ -44,4 +44,5 @@
     <string name="file_state_downloading">Downloading</string>
     <string name="file_state_downloaded">Downloaded</string>
 
+    <string name="msg_fail_get_file_list">Fail to get file list</string>
 </resources>
