@@ -168,6 +168,6 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     }
 
     private void openFile(CourseFile file) {
-        // TODO: 2/25/2016
+        // TODO: 2/25/2016 open file using external apps
     }
 }

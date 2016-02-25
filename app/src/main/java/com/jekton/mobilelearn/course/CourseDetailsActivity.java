@@ -112,7 +112,8 @@ public class CourseDetailsActivity
     @Override
     public void onClick(View v) {
         if (mCourse.taken) {
-            // TODO: 2/16/2016  goto the course activity
+            startActivity(CourseLearningActivity.makeIntent(this, mCourse._id));
+            finish();
         } else {
             showDialog();
             getDocument().onTakeCourse(mCourse._id);
