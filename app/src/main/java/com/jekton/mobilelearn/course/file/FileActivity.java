@@ -19,10 +19,14 @@ import android.widget.ListView;
 
 import com.jekton.mobilelearn.R;
 import com.jekton.mobilelearn.common.activity.DialogEnabledActivity;
+import com.jekton.mobilelearn.common.util.Logger;
 import com.jekton.mobilelearn.course.file.FileDownloadService.DownloadServiceBinder;
+import com.nbsp.materialfilepicker.MaterialFilePicker;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * @author Jekton
@@ -31,6 +35,8 @@ public class FileActivity
         extends DialogEnabledActivity<FileActivityOps, FileActivityDocumentOps>
         implements FileActivityOps, FileListAdapter.OnButtonClicked, ListView.OnItemClickListener,
         FileDownloadService.DownloadObserver {
+
+    private static final String TAG = FileActivity.class.getSimpleName();
 
     private static final String INTENT_EXTRA_COURSE_ID = "INTENT_EXTRA_COURSE_ID";
 
@@ -101,9 +107,35 @@ public class FileActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO: 2/26/2016
+        int id = item.getItemId();
+        if (id == R.id.add_file) {
+//            Intent intent = new Intent(this, FilePickerActivity.class);
+//            intent.putExtra(FilePickerActivity.ARG_FILE_FILTER, Pattern.compile(".*\\.txt$"));
+//            intent.putExtra(FilePickerActivity.ARG_DIRECTORIES_FILTER, true);
+//            startActivityForResult(intent, 1);new MaterialFilePicker()
+            new MaterialFilePicker()
+                    .withActivity(this)
+                    .withRequestCode(1)
+                    .withFilter(Pattern.compile("[\\w\\W]*")) // Filtering files and directories by file name using regexp
+//                    .withFilter(Pattern.compile(".*\\.txt$")) // Filtering files and directories by file name using regexp
+//                    .withFilterDirectories(true) // Set directories filterable (false by default)
+                    .start();
+
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+            Logger.d(TAG, "filePath = " + filePath);
+        }
+    }
+
 
     @Override
     protected void onStart() {
