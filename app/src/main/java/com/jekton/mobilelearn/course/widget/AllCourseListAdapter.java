@@ -47,7 +47,7 @@ public class AllCourseListAdapter extends BaseAdapter {
 
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext)
-                    .inflate(R.layout.widget_all_courses_list_item,
+                    .inflate(R.layout.widget_courses_list_item,
                              parent,
                              false);
             ViewHolder holder = new ViewHolder();

@@ -6,7 +6,7 @@
     <string name="title_course_details">Course Details</string>
     <string name="title_course_learning">Course Learning</string>
     <string name="title_file">Files</string>
-    <string name="title_video">Video Player</string>
+    <string name="title_video">Lectures</string>
 
     <!-- Common error message -->
     <string name="err_network_error">Network Error</string>
