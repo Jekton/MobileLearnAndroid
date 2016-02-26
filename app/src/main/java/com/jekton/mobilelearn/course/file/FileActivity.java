@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +33,7 @@ import java.util.regex.Pattern;
 public class FileActivity
         extends DialogEnabledActivity<FileActivityOps, FileActivityDocumentOps>
         implements FileActivityOps, FileListAdapter.OnButtonClicked,
-        FileDownloadService.DownloadObserver {
+        FileDownloadService.DownloadObserver, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = FileActivity.class.getSimpleName();
 
@@ -41,6 +42,7 @@ public class FileActivity
     private String mCourseId;
     private List<CourseFile> mCourseFiles;
     private FileListAdapter mListAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private boolean mBound;
     private FileDownloadService mService;
@@ -85,6 +87,13 @@ public class FileActivity
         ListView listView = (ListView) findViewById(R.id.file_list);
         mListAdapter = new FileListAdapter(this, this);
         listView.setAdapter(mListAdapter);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.swipe_color_1,
+                                                    R.color.swipe_color_2,
+                                                    R.color.swipe_color_3,
+                                                    R.color.swipe_color_4);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
     private void initCourseId() {
@@ -164,9 +173,12 @@ public class FileActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                closeDialog();
                 mCourseFiles = courseFiles;
                 mListAdapter.updateCourseFiles(mCourseFiles);
+                closeDialog();
+                if (mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
             }
         });
 
@@ -219,5 +231,10 @@ public class FileActivity
         Intent intent = new Intent(activity, FileActivity.class);
         intent.putExtra(INTENT_EXTRA_COURSE_ID, courseId);
         return intent;
+    }
+
+    @Override
+    public void onRefresh() {
+        getDocument().initFileList(mCourseId);
     }
 }

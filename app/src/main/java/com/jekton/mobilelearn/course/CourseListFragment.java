@@ -50,7 +50,7 @@ abstract class CourseListFragment extends Fragment
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_all_courses, container, false);
+        View view = inflater.inflate(R.layout.fragment_course_list, container, false);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.swipe_color_1,
                                                     R.color.swipe_color_2,
