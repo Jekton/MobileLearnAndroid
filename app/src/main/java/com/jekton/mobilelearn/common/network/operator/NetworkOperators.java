@@ -43,7 +43,12 @@ public class NetworkOperators {
     }
 
     public static NetworkOperatorService newMultiRequestOperator() {
-        return new MultiRequestOperator(new HashMap<Object, HttpRunnable>());
+        final int defaultThreads = 5;
+        return new MultiRequestOperator(new HashMap<Object, HttpRunnable>(), defaultThreads);
+    }
+
+    public static NetworkOperatorService newMultiRequestOperator(int threads) {
+        return new MultiRequestOperator(new HashMap<Object, HttpRunnable>(), threads);
     }
 
     private NetworkOperators() {

@@ -27,8 +27,8 @@ class MultiRequestOperator implements NetworkOperatorService {
     private final Object mLock;
     private boolean mShutdown;
 
-    public MultiRequestOperator(Map<Object, HttpRunnable> map) {
-        mExecutor = Executors.newFixedThreadPool(5);
+    public MultiRequestOperator(Map<Object, HttpRunnable> map, int threads) {
+        mExecutor = Executors.newFixedThreadPool(threads);
         mRunnableHashMap = map;
         mRandom = new Random();
         mLock = new Object();
