@@ -40,6 +40,7 @@
 
 
     <string name="menu_view_files">View Files</string>
+    <string name="menu_add_file">Add File</string>
 
     <string name="file_list_btn_not_download">Download</string>
     <string name="file_list_btn_downloading">%d %%</string>
