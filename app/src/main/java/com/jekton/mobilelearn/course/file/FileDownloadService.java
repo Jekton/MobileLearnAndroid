@@ -139,7 +139,8 @@ public class FileDownloadService extends Service {
         @Override
         public void onResponseSuccess(Response response) {
             try {
-                int totalBytes = Integer.parseInt(response.header("Content-Length"));
+                // God knows whether it will go beyond the 2G limit, therefore, use a long type
+                long totalBytes = Integer.parseInt(response.header("Content-Length"));
                 storeToFile(response.body().byteStream(), totalBytes);
                 Logger.d(LOG_TAG, "downloaded");
                 synchronized (mLock) {
@@ -172,7 +173,7 @@ public class FileDownloadService extends Service {
                 int len;
                 while ((len = in.read(buffer)) > 0) {
                     downloaded += len;
-                    notifyObserver(downloaded * 100 / totalBytes);
+                    notifyObserver((int) (downloaded * 100 / totalBytes));
 
                     out.write(buffer, 0, len);
                 }
@@ -184,7 +185,7 @@ public class FileDownloadService extends Service {
             }
         }
 
-        private void notifyObserver(long percent) {
+        private void notifyObserver(int percent) {
             DownloadObserver observer = mObserver;
             if (observer != null) {
                 observer.onStateChange(mRemotePath, percent);
@@ -209,7 +210,7 @@ public class FileDownloadService extends Service {
          * @param path remote path of the downloading file
          * @param percent downloading progress, -1 if download fail
          */
-        void onStateChange(String path, long percent);
+        void onStateChange(String path, int percent);
 
     }
 }

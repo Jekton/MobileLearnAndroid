@@ -91,7 +91,7 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     }
 
     @Override
-    public void onStateChange(String path, long percent) {
+    public void onStateChange(String path, int percent) {
         Logger.d(LOG_TAG, "path = " + path + ", percent = " + percent);
         List<CourseFile> courseFiles = mCourseFiles.get();
         for (CourseFile file : courseFiles) {
@@ -102,6 +102,7 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
                     file.state = CourseFile.STATE_NOT_DOWNLOAD;
                 } else {
                     file.state = CourseFile.STATE_DOWNLOADING;
+                    file.downloadProgress = percent;
                 }
 
                 notifyFileListChanged();

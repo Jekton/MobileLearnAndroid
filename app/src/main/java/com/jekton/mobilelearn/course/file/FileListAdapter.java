@@ -56,10 +56,26 @@ class FileListAdapter extends BaseAdapter implements View.OnClickListener {
         ViewHolder holder = (ViewHolder) convertView.getTag();
         CourseFile file = getItem(position);
         holder.mTextView.setText(file.filename);
-        holder.mButton.setText(file.getStateStringRes());
+        holder.mButton.setText(makeBtnText(file));
+        holder.mButton.setClickable(file.state != CourseFile.STATE_DOWNLOADING);
         // use to find that which item clicked
         holder.mButton.setTag(position);
         return convertView;
+    }
+
+
+    private String makeBtnText(CourseFile file) {
+        switch (file.state) {
+            case CourseFile.STATE_NOT_DOWNLOAD:
+                return mContext.getString(R.string.file_list_btn_not_download);
+            case CourseFile.STATE_DOWNLOADING:
+                return String.format(mContext.getString(R.string.file_list_btn_downloading),
+                                     file.downloadProgress);
+            case CourseFile.STATE_DOWNLOADED:
+                return mContext.getString(R.string.file_list_btn_downloaded);
+            default:
+                return "";
+        }
     }
 
     public void updateCourseFiles(List<CourseFile> courseFiles) {

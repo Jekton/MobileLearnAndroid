@@ -41,9 +41,9 @@
 
     <string name="menu_view_files">View Files</string>
 
-    <string name="file_state_not_download">Download</string>
-    <string name="file_state_downloading">Downloading</string>
-    <string name="file_state_downloaded">Downloaded</string>
+    <string name="file_list_btn_not_download">Download</string>
+    <string name="file_list_btn_downloading">%d %%</string>
+    <string name="file_list_btn_downloaded">Open</string>
 
     <string name="msg_fail_get_file_list">Fail to get file list</string>
 </resources>
