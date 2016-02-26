@@ -20,5 +20,7 @@ interface FileActivityOps extends ContextView {
 
     void onLocalFileSystemError();
 
+    void onOpenFileFail();
+
     Set<String> getDownloadingSet();
 }

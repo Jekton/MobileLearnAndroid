@@ -160,6 +160,11 @@ public class FileActivity
     }
 
     @Override
+    public void onOpenFileFail() {
+        showToastAndDismissDialog(R.string.msg_fail_open_file);
+    }
+
+    @Override
     public Set<String> getDownloadingSet() {
         return mService.getDownloadingSet();
     }

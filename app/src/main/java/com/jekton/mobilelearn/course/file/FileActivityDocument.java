@@ -1,6 +1,10 @@
 package com.jekton.mobilelearn.course.file;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.webkit.MimeTypeMap;
 
 import com.google.gson.Gson;
 import com.jekton.mobilelearn.common.dv.AbstractDocument;
@@ -15,7 +19,6 @@ import com.jekton.mobilelearn.network.UrlConstants;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -29,21 +32,15 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     private static final String LOG_TAG = FileActivityDocument.class.getSimpleName();
 
     private NetworkOperator mNetworkOperator = NetworkOperators.getSingleRequestOperator();
-    private AtomicReference<String> mCourseId;
-    private AtomicReference<Course> mCourse;
-    private AtomicReference<List<CourseFile>> mCourseFiles;
+    private volatile String mCourseId;
+    private volatile Course mCourse;
+    private volatile List<CourseFile> mCourseFiles;
     private volatile boolean mHasDownloadingSet;
 
 
-    public FileActivityDocument() {
-        mCourseId = new AtomicReference<>();
-        mCourse = new AtomicReference<>();
-        mCourseFiles = new AtomicReference<>();
-    }
-
     @Override
     public void initFileList(String courseId) {
-        mCourseId.set(courseId);
+        mCourseId = courseId;
         String url = String.format(UrlConstants.GET_TAKEN_COURSE_TEMPLATE, courseId);
         Request request = HttpUtils.makeGetRequest(url);
         mNetworkOperator.executeRequest(request, new OnResponseCallback() {
@@ -54,14 +51,14 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
                     try {
                         Gson gson = new Gson();
                         Course course = gson.fromJson(response.body().string(), Course.class);
-                        mCourse.set(course);
+                        mCourse = course;
 
                         List<CourseFile> courseFiles = FileUtil.makeFileList(course);
                         if (courseFiles == null) {
                             view.onLocalFileSystemError();
                         } else {
                             setDownloadingOrNot(courseFiles);
-                            mCourseFiles.set(courseFiles);
+                            mCourseFiles = courseFiles;
                             view.onFilesChange(courseFiles);
                         }
                     } catch (IOException e) {
@@ -93,7 +90,7 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     @Override
     public void onStateChange(String path, int percent) {
         Logger.d(LOG_TAG, "path = " + path + ", percent = " + percent);
-        List<CourseFile> courseFiles = mCourseFiles.get();
+        List<CourseFile> courseFiles = mCourseFiles;
         for (CourseFile file : courseFiles) {
             if (file.path.equals(path)) {
                 if (percent == 100) {
@@ -114,7 +111,7 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     private void notifyFileListChanged() {
         FileActivityOps view = getView();
         if (view != null) {
-            view.onFilesChange(mCourseFiles.get());
+            view.onFilesChange(mCourseFiles);
         }
     }
 
@@ -145,10 +142,13 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
         switch (courseFile.state) {
             case CourseFile.STATE_NOT_DOWNLOAD:
                 downFile(courseFile);
+                break;
             case CourseFile.STATE_DOWNLOADING:
                 // no-op
+                break;
             case CourseFile.STATE_DOWNLOADED:
                 openFile(courseFile);
+                break;
             default:
                 // should not happen
                 // no-op
@@ -161,7 +161,7 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
             Intent downFileIntent = FileDownloadService.makeDownloadIntent(
                     view.getContext(),
                     file.path,
-                    FileUtil.makeLocalPath(mCourse.get(), file)
+                    FileUtil.makeLocalPath(mCourse, file)
             );
             view.getContext().startService(downFileIntent);
             file.state = CourseFile.STATE_DOWNLOADING;
@@ -170,6 +170,24 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     }
 
     private void openFile(CourseFile file) {
-        // TODO: 2/25/2016 open file using external apps
+        Logger.d(LOG_TAG, "being to open file");
+        String url = FileUtil.makeLocalPath(mCourse, file);
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.parse("file://" + url), mimeType);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        FileActivityOps view = getView();
+        if (view != null) {
+            Context context = view.getContext();
+            try {
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                view.onOpenFileFail();
+            }
+        }
+
     }
 }

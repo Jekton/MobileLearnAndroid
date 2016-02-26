@@ -47,4 +47,5 @@
     <string name="file_list_btn_downloaded">Open</string>
 
     <string name="msg_fail_get_file_list">Fail to get file list</string>
+    <string name="msg_fail_open_file">Couldn\'t open this file type</string>
 </resources>
