@@ -168,7 +168,7 @@ public class FileActivity
     }
 
     @Override
-    public void onStateChange(String path, int percent) {
+    public void onStateChange(String path, long percent) {
         getDocument().onStateChange(path, percent);
     }
 

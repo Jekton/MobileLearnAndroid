@@ -91,7 +91,8 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     }
 
     @Override
-    public void onStateChange(String path, int percent) {
+    public void onStateChange(String path, long percent) {
+        Logger.d(LOG_TAG, "path = " + path + ", percent = " + percent);
         List<CourseFile> courseFiles = mCourseFiles.get();
         for (CourseFile file : courseFiles) {
             if (file.path.equals(path)) {

@@ -14,11 +14,14 @@ import com.jekton.mobilelearn.common.network.operator.OnResponseCallback;
 import com.jekton.mobilelearn.common.util.Logger;
 import com.jekton.mobilelearn.network.UrlConstants;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.Response;
 
@@ -38,7 +41,7 @@ public class FileDownloadService extends Service {
     private Set<String> mDownloadingSet = new HashSet<>();
     private NetworkOperatorService mNetworkOperator = NetworkOperators.newMultiRequestOperator();
 
-    private final AtomicReference<DownloadObserver> mObserver = new AtomicReference<>();
+    private volatile DownloadObserver mObserver;
 
 
     @Override
@@ -113,12 +116,11 @@ public class FileDownloadService extends Service {
 
 
     public void registerDownloadObserver(DownloadObserver observer) {
-        mObserver.set(observer);
-        // TODO: 2/25/2016  push progress of all downloading file
+        mObserver = observer;
     }
 
     public void unregisterDownloadObserver() {
-        mObserver.set(null);
+        mObserver = null;
     }
 
 
@@ -137,7 +139,8 @@ public class FileDownloadService extends Service {
         @Override
         public void onResponseSuccess(Response response) {
             try {
-                FileUtil.writeToPath(response.body().byteStream(), mStoreTo);
+                int totalBytes = Integer.parseInt(response.header("Content-Length"));
+                storeToFile(response.body().byteStream(), totalBytes);
                 Logger.d(LOG_TAG, "downloaded");
                 synchronized (mLock) {
                     mDownloadingSet.remove(mRemotePath);
@@ -145,8 +148,6 @@ public class FileDownloadService extends Service {
                         stopSelf();
                     }
                 }
-
-                notifyObserver(100);
             } catch (IOException e) {
                 Logger.d(LOG_TAG, e);
 
@@ -160,8 +161,31 @@ public class FileDownloadService extends Service {
             }
         }
 
-        private void notifyObserver(int percent) {
-            DownloadObserver observer = mObserver.get();
+
+        public void storeToFile(InputStream in, long totalBytes) throws IOException {
+            OutputStream out = null;
+            try {
+                out = new BufferedOutputStream(new FileOutputStream(mStoreTo));
+                long downloaded = 0;
+
+                byte[] buffer = new byte[4096];
+                int len;
+                while ((len = in.read(buffer)) > 0) {
+                    downloaded += len;
+                    notifyObserver(downloaded * 100 / totalBytes);
+
+                    out.write(buffer, 0, len);
+                }
+            } finally {
+                if (out != null) {
+                    out.flush();
+                    out.close();
+                }
+            }
+        }
+
+        private void notifyObserver(long percent) {
+            DownloadObserver observer = mObserver;
             if (observer != null) {
                 observer.onStateChange(mRemotePath, percent);
             }
@@ -185,7 +209,7 @@ public class FileDownloadService extends Service {
          * @param path remote path of the downloading file
          * @param percent downloading progress, -1 if download fail
          */
-        void onStateChange(String path, int percent);
+        void onStateChange(String path, long percent);
 
     }
 }
