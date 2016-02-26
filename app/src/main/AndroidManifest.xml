@@ -15,9 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".register.RegisterActivity" />
+        <activity
+            android:name=".register.RegisterActivity"
+            android:label="@string/title_register"/>
 
-        <activity android:name=".login.LoginActivity"/>
+        <activity
+            android:name=".login.LoginActivity"
+            android:label="@string/login"/>
 
         <activity
             android:name=".course.MainActivity"
@@ -29,16 +33,41 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".course.CourseDetailsActivity" />
+        <activity
+            android:name=".course.CourseDetailsActivity"
+            android:label="@string/title_course_details"
+            android:parentActivityName=".course.MainActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".course.MainActivity" />
+        </activity>
+
 
         <activity
             android:name=".course.CourseLearningActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_course_learning"
+            android:parentActivityName=".course.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".course.MainActivity" />
+        </activity>
+
+
         <activity
             android:name=".course.file.FileActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_file"
+            android:parentActivityName=".course.CourseLearningActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".course.CourseLearningActivity" />
+        </activity>
 
-        <activity android:name=".course.VideoActivity" />
+        <activity
+            android:name=".course.VideoActivity"
+            android:label="@string/title_video"/>
 
 
         <service android:name=".course.file.FileDownloadService" />

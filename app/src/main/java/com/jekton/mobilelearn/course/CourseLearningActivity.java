@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +50,10 @@ public class CourseLearningActivity
         setContentView(R.layout.activity_course_learning);
 
         initView();
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void initCourseId() {
@@ -141,6 +146,11 @@ public class CourseLearningActivity
 
     public static Intent makeIntent(Activity activity, String courseId) {
         Intent intent = new Intent(activity, CourseLearningActivity.class);
+        intent.putExtra(INTENT_EXTRA_COURSE_ID, courseId);
+        return intent;
+    }
+
+    public static Intent makeIntent(Intent intent, String courseId) {
         intent.putExtra(INTENT_EXTRA_COURSE_ID, courseId);
         return intent;
     }
