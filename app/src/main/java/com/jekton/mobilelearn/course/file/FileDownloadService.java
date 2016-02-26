@@ -38,7 +38,7 @@ public class FileDownloadService extends Service {
     private IBinder mBinder = new DownloadServiceBinder();
 
     private final Object mLock = new Object();
-    private Set<String> mDownloadingSet = new HashSet<>();
+    private final Set<String> mDownloadingSet = new HashSet<>();
     private NetworkOperatorService mNetworkOperator = NetworkOperators.newMultiRequestOperator();
 
     private volatile DownloadObserver mObserver;

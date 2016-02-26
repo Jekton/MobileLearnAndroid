@@ -15,5 +15,5 @@ public class UrlConstants {
     public static final String GET_TAKEN_COURSES = HOST + "/api/takencourses";
     public static final String GET_TAKEN_COURSE_TEMPLATE = HOST + "/api/takencourses/%s";
     public static final String TAKE_COURSE_TEMPLATE = HOST + "/api/takecourse/%s";
-
+    public static final String FILE_UPLOAD_TEMPLATE = HOST + "/api/%s/file";
 }

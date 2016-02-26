@@ -17,4 +17,6 @@ interface FileActivityDocumentOps
     void performActionFor(CourseFile courseFile);
 
     void setDownloadingSetAvailable(boolean available);
+
+    void uploadFile(String filepath);
 }

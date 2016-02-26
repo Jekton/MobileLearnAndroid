@@ -13,8 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.jekton.mobilelearn.R;
@@ -33,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public class FileActivity
         extends DialogEnabledActivity<FileActivityOps, FileActivityDocumentOps>
-        implements FileActivityOps, FileListAdapter.OnButtonClicked, ListView.OnItemClickListener,
+        implements FileActivityOps, FileListAdapter.OnButtonClicked,
         FileDownloadService.DownloadObserver {
 
     private static final String TAG = FileActivity.class.getSimpleName();
@@ -109,15 +107,11 @@ public class FileActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.add_file) {
-//            Intent intent = new Intent(this, FilePickerActivity.class);
-//            intent.putExtra(FilePickerActivity.ARG_FILE_FILTER, Pattern.compile(".*\\.txt$"));
-//            intent.putExtra(FilePickerActivity.ARG_DIRECTORIES_FILTER, true);
-//            startActivityForResult(intent, 1);new MaterialFilePicker()
             new MaterialFilePicker()
                     .withActivity(this)
                     .withRequestCode(1)
-                    .withFilter(Pattern.compile("[\\w\\W]*")) // Filtering files and directories by file name using regexp
-//                    .withFilter(Pattern.compile(".*\\.txt$")) // Filtering files and directories by file name using regexp
+                    // Filtering files and directories by file name using regexp
+                    .withFilter(Pattern.compile("[\\w\\W]*"))
 //                    .withFilterDirectories(true) // Set directories filterable (false by default)
                     .start();
 
@@ -128,11 +122,13 @@ public class FileActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && resultCode == RESULT_OK) {
             String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
             Logger.d(TAG, "filePath = " + filePath);
+            getDocument().uploadFile(filePath);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -213,11 +209,6 @@ public class FileActivity
     }
 
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // TODO: 2/25/2016 ask for download
-        onButtonClicked(position);
-    }
 
     @Override
     public void onStateChange(String path, int percent) {

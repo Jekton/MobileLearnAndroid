@@ -42,6 +42,7 @@
 
 
         <service android:name=".course.file.FileDownloadService" />
+        <service android:name=".course.file.FileUploadService" />
 
     </application>
 

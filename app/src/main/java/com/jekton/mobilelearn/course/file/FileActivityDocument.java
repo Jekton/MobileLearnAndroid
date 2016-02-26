@@ -32,7 +32,6 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
     private static final String LOG_TAG = FileActivityDocument.class.getSimpleName();
 
     private NetworkOperator mNetworkOperator = NetworkOperators.getSingleRequestOperator();
-    private volatile String mCourseId;
     private volatile Course mCourse;
     private volatile List<CourseFile> mCourseFiles;
     private volatile boolean mHasDownloadingSet;
@@ -40,7 +39,6 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
 
     @Override
     public void initFileList(String courseId) {
-        mCourseId = courseId;
         String url = String.format(UrlConstants.GET_TAKEN_COURSE_TEMPLATE, courseId);
         Request request = HttpUtils.makeGetRequest(url);
         mNetworkOperator.executeRequest(request, new OnResponseCallback() {
@@ -189,5 +187,21 @@ class FileActivityDocument extends AbstractDocument<FileActivityOps>
             }
         }
 
+    }
+
+
+    @Override
+    public void uploadFile(String filepath) {
+        Logger.d(LOG_TAG, "uploadFile");
+        FileActivityOps view = getView();
+        Logger.d(LOG_TAG, "view = " + view);
+
+        if (view != null) {
+            Context context = view.getContext();
+            String url = String.format(UrlConstants.FILE_UPLOAD_TEMPLATE, mCourse._id);
+            Intent intent = FileUploadService.makeIntent(context, filepath, url);
+            Logger.d(LOG_TAG, "startService");
+            context.startService(intent);
+        }
     }
 }
