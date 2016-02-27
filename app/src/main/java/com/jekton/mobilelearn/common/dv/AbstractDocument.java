@@ -23,6 +23,11 @@ public abstract class AbstractDocument<ViewOps> implements BasicDocumentOps<View
     }
 
     @Override
+    public void onDestroy() {
+        // no-op
+    }
+
+    @Override
     public void setView(ViewOps view) {
         mReference = new WeakReference<>(view);
     }
