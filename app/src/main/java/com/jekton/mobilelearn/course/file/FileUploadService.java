@@ -107,7 +107,7 @@ public class FileUploadService extends Service {
         private void removeCookie() {
             synchronized (mLock) {
                 mUploadingSet.remove(mCookie);
-                if (mUploadingSet.size() == 0) {
+                if (mUploadingSet.isEmpty()) {
                     stopSelf();
                 }
             }

@@ -33,10 +33,7 @@ public abstract class AbstractDocument<ViewOps> implements BasicDocumentOps<View
     }
 
     public @Nullable ViewOps getView() {
-        if (mReference == null) {
-            return null;
-        }
-        return mReference.get();
+        return mReference == null ? null : mReference.get();
     }
 
 }

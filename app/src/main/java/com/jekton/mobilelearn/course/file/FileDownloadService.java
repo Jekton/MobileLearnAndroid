@@ -145,7 +145,7 @@ public class FileDownloadService extends Service {
                 Logger.d(LOG_TAG, "downloaded");
                 synchronized (mLock) {
                     mDownloadingSet.remove(mRemotePath);
-                    if (mDownloadingSet.size() == 0) {
+                    if (mDownloadingSet.isEmpty()) {
                         stopSelf();
                     }
                 }
